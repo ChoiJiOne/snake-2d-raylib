@@ -1,11 +1,12 @@
 #include "ActorManager.h"
 #include "GameAssert.h"
+#include "GameLog.h"
 
 void ActorManager::Startup()
 {
 	if (_isInitialized)
 	{
-		// [TODO] 여기에 로그 출력 필요.
+		GAME_LOG_ERR("ALREADY_INITIALIZE_ACTOR_MANAGER");
 		return;
 	}
 
@@ -16,7 +17,7 @@ void ActorManager::Shutdown()
 {
 	if (!_isInitialized)
 	{
-		// [TODO] 여기에 로그 출력 필요.
+		GAME_LOG_ERR("NOT_INITIALIZE_ACTOR_MANAGER");
 		return;
 	}
 

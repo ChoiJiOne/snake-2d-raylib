@@ -174,11 +174,17 @@ int main(int argc, char* argv[])
         }
 
         int offset = newOffsetX + newOffsetY * count;
+        bool isEatFood = false;
         if (board[offset].state != EState::BODY)
         {
             canMove = true;
+            if (board[offset].state == EState::FOOD)
+            {
+                isEatFood = true;
+                snake.bodys.emplace_back(snake.bodys.back());
+            }
         }
-
+        
         if (canMove)
         {
             for (const auto& body : snake.bodys)
@@ -187,7 +193,13 @@ int main(int argc, char* argv[])
                 board[offset].state = EState::NONE;
             }
 
-            for (size_t idx = snake.bodys.size() - 1; idx >= 1; --idx)
+            size_t startIdx = snake.bodys.size() - 1;
+            if (isEatFood)
+            {
+                startIdx = snake.bodys.size() - 2;
+            }
+
+            for (size_t idx = startIdx; idx >= 1; --idx)
             {
                 snake.bodys[idx].offsetX = snake.bodys[idx - 1].offsetX;
                 snake.bodys[idx].offsetY = snake.bodys[idx - 1].offsetY;
@@ -203,12 +215,28 @@ int main(int argc, char* argv[])
             }
         }
 
+        if (isEatFood)
+        {
+            while (true)
+            {
+                food.offsetX = GetRandomValue(0, count - 1);
+                food.offsetY = GetRandomValue(0, count - 1);
+
+                int offset = food.offsetX + food.offsetY * count;
+                if (board[offset].state == EState::NONE)
+                {
+                    board[offset].state = EState::FOOD;
+                    break;
+                }
+            }
+        }
+
         BeginDrawing();
         {
             ClearBackground(RAYWHITE);
 
-            DrawTileMapGrid();
             DrawTileMap();
+            DrawTileMapGrid();
         }
         EndDrawing();
     }

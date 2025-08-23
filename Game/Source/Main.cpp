@@ -18,6 +18,15 @@ enum class EState
     FOOD = 0x02,
 };
 
+enum class EDirection
+{
+    NONE  = 0x00,
+    LEFT  = 0x01,
+    RIGHT = 0x02,
+    UP    = 0x03,
+    DOWN  = 0x04,
+};
+
 struct Body
 {
     int offsetX;
@@ -136,46 +145,62 @@ int main(int argc, char* argv[])
         }
     }
     
+    float stepTime = 0.0f;
+    bool isGameOver = false;
+    EDirection lastDirection = EDirection::NONE;
     while (!WindowShouldClose()) 
     {
+        stepTime += GetFrameTime();
+        
+
+        EDirection direction = EDirection::NONE;
         bool canMove = false;
         const Body& head = snake.bodys.front();
-        int newOffsetX = head.offsetX;
-        int newOffsetY = head.offsetY;
         if (IsKeyPressed(KEY_RIGHT))
         {
-            newOffsetX = (newOffsetX + 1) % count;
+            direction = EDirection::RIGHT;
         }
         if (IsKeyPressed(KEY_LEFT))
         {
-            if (newOffsetX <= 0)
-            {
-                newOffsetX = count - 1;
-            }
-            else
-            {
-                newOffsetX = newOffsetX - 1;
-            }
+            direction = EDirection::LEFT;
         }
         if (IsKeyPressed(KEY_UP))
         {
-            if (newOffsetY <= 0)
-            {
-                newOffsetY = count - 1;
-            }
-            else
-            {
-                newOffsetY = newOffsetY - 1;
-            }
+            direction = EDirection::UP;
         }
         if (IsKeyPressed(KEY_DOWN))
         {
+            direction = EDirection::DOWN;
+        }
+        lastDirection = direction;
+
+        int newOffsetX = head.offsetX;
+        int newOffsetY = head.offsetY;
+        switch (stepTime > 1.0f ? lastDirection : direction)
+        {
+        case EDirection::LEFT:
+            newOffsetX = (newOffsetX <= 0) ? count - 1 : newOffsetX - 1;
+            break;
+
+        case EDirection::RIGHT:
+            newOffsetX = (newOffsetX + 1) % count;
+            break;
+
+        case EDirection::UP:
+            newOffsetY = (newOffsetY <= 0) ? count - 1 : newOffsetY - 1;
+            break;
+
+        case EDirection::DOWN:
             newOffsetY = (newOffsetY + 1) % count;
+            break;
+
+        default:
+            break;
         }
 
         int offset = newOffsetX + newOffsetY * count;
         bool isEatFood = false;
-        if (board[offset].state != EState::BODY)
+        if (direction != EDirection::NONE && board[offset].state != EState::BODY)
         {
             canMove = true;
             if (board[offset].state == EState::FOOD)
@@ -212,6 +237,12 @@ int main(int argc, char* argv[])
             {
                 int offset = body.offsetX + body.offsetY * count;
                 board[offset].state = EState::BODY;
+            }
+
+            stepTime = 0.0f;
+            if (stepTime > 1.0f)
+            {
+                stepTime = 0.0f;
             }
         }
 

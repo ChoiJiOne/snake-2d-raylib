@@ -26,16 +26,35 @@ int main(int argc, char* argv[])
     Snake* snake = ActorManager::Get().Create<Snake>(board, 4, EDirection::RIGHT);
     Food* food = ActorManager::Get().Create<Food>(board);
 
+    std::vector<IActor*> updateActors =
+    {
+        snake,
+        food,
+        board,
+    };
+
+    std::vector<IActor*> renderActors =
+    { 
+        board,
+        snake,
+        food,
+    };
+
     while (!WindowShouldClose()) 
     {
-        snake->Tick(0.0f);
-        food->Tick(0.0f);
+        float deltaSeconds = GetFrameTime();
+        for (auto& updateActor : updateActors)
+        {
+            updateActor->Tick(deltaSeconds);
+        }
 
         BeginDrawing();
         {
             ClearBackground(RAYWHITE);
-
-            board->Render();
+            for (auto& renderActor : renderActors)
+            {
+                renderActor->Render();
+            }
         }
         EndDrawing();
     }

@@ -55,6 +55,19 @@ void Board::SetTileState(const BoardCoord& boardCoord, const ETileState& tileSta
 	_tiles[offset].state = tileState;
 }
 
+bool Board::IsFullTile()
+{
+	for (const auto& tile : _tiles)
+	{
+		if (tile.state == ETileState::NONE)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 std::vector<Tile> Board::CreateTiles()
 {
 	std::vector<Tile> tiles;

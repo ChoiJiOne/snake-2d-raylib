@@ -43,6 +43,8 @@ public:
 
 	void SetTileState(const BoardCoord& boardCoord, const ETileState& tileState);
 
+	bool IsFullTile();
+
 private:
 	std::vector<Tile> CreateTiles();
 

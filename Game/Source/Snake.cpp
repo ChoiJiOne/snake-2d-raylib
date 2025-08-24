@@ -26,6 +26,14 @@ Snake::Snake(Board* board, int32_t startBodyCount, const EDirection& startDirect
 		{ EDirection::DOWN,  BoardCoord{  0, -1 } },
 	};
 
+    _keyCodeDirections =
+    {
+        { KEY_LEFT,  EDirection::LEFT  },
+        { KEY_RIGHT, EDirection::RIGHT },
+        { KEY_UP,    EDirection::UP    },
+        { KEY_DOWN,  EDirection::DOWN  },
+    };
+
 	_bodys = CreateBodys();
 	SetBodyOnBoard(ETileState::BODY);
 
@@ -42,88 +50,34 @@ Snake::~Snake()
 
 void Snake::Tick(float deltaSeconds)
 {
-    EDirection direction = EDirection::NONE;
-    bool canMove = false;
-
     const BoardCoord& head = _bodys.front();
-    if (IsKeyPressed(KEY_RIGHT))
+    EDirection direction = EDirection::NONE;
+    for (const auto& keyCodeDirection : _keyCodeDirections)
     {
-        direction = EDirection::RIGHT;
-    }
-    if (IsKeyPressed(KEY_LEFT))
-    {
-        direction = EDirection::LEFT;
-    }
-    if (IsKeyPressed(KEY_UP))
-    {
-        direction = EDirection::UP;
-    }
-    if (IsKeyPressed(KEY_DOWN))
-    {
-        direction = EDirection::DOWN;
-    }
-
-    int newOffsetX = head.offsetX;
-    int newOffsetY = head.offsetY;
-    switch (direction)
-    {
-    case EDirection::LEFT:
-        newOffsetX = (newOffsetX <= 0) ? _board->GetColTileCount() - 1 : newOffsetX - 1;
-        break;
-
-    case EDirection::RIGHT:
-        newOffsetX = (newOffsetX + 1) % _board->GetColTileCount();
-        break;
-
-    case EDirection::UP:
-        newOffsetY = (newOffsetY <= 0) ? _board->GetRowTileCount() - 1 : newOffsetY - 1;
-        break;
-
-    case EDirection::DOWN:
-        newOffsetY = (newOffsetY + 1) % _board->GetRowTileCount();
-        break;
-
-    default:
-        break;
-    }
-
-    bool isEatFood = false;
-    if (direction != EDirection::NONE && _board->GetTileState(BoardCoord{ newOffsetX, newOffsetY }) != ETileState::BODY)
-    {
-        canMove = true;
-        if (_board->GetTileState(BoardCoord{ newOffsetX, newOffsetY }) == ETileState::FOOD)
+        if (IsKeyPressed(keyCodeDirection.first))
         {
-            isEatFood = true;
-            _bodys.emplace_back(_bodys.back());
+            direction = keyCodeDirection.second;
         }
     }
 
+    if (direction == EDirection::NONE)
+    {
+        // 움직임이 없으면 아무 동작도 수행하지 않음.
+        return;
+    }
+
+    BoardCoord moveBoardCoord = CalculateDirectionBoardCoord(head, direction);
+
+    bool isEatFood = (_board->GetTileState(moveBoardCoord) == ETileState::FOOD);
+    if (isEatFood)
+    {
+        _bodys.emplace_back(_bodys.back());
+    }
+
+    bool canMove = (_board->GetTileState(moveBoardCoord) != ETileState::BODY);
     if (canMove)
     {
-        for (const auto& body : _bodys)
-        {
-            _board->SetTileState(body, ETileState::NONE);
-        }
-
-        size_t startIdx = _bodys.size() - 1;
-        if (isEatFood)
-        {
-            startIdx = _bodys.size() - 2;
-        }
-
-        for (size_t idx = startIdx; idx >= 1; --idx)
-        {
-            _bodys[idx].offsetX = _bodys[idx - 1].offsetX;
-            _bodys[idx].offsetY = _bodys[idx - 1].offsetY;
-        }
-
-        _bodys[0].offsetX = newOffsetX;
-        _bodys[0].offsetY = newOffsetY;
-
-        for (const auto& body : _bodys)
-        {
-            _board->SetTileState(body, ETileState::BODY);
-        }
+        Move(moveBoardCoord, isEatFood);
     }
 }
 
@@ -171,4 +125,49 @@ void Snake::SetBodyOnBoard(const ETileState& state)
 	{
 		_board->SetTileState(body, state);
 	}
+}
+
+BoardCoord Snake::CalculateDirectionBoardCoord(const BoardCoord& targetCoord, const EDirection& direction)
+{
+    int newOffsetX = targetCoord.offsetX;
+    int newOffsetY = targetCoord.offsetY;
+    switch (direction)
+    {
+    case EDirection::LEFT:
+        newOffsetX = (newOffsetX <= 0) ? _board->GetColTileCount() - 1 : newOffsetX - 1;
+        break;
+
+    case EDirection::RIGHT:
+        newOffsetX = (newOffsetX + 1) % _board->GetColTileCount();
+        break;
+
+    case EDirection::UP:
+        newOffsetY = (newOffsetY <= 0) ? _board->GetRowTileCount() - 1 : newOffsetY - 1;
+        break;
+
+    case EDirection::DOWN:
+        newOffsetY = (newOffsetY + 1) % _board->GetRowTileCount();
+        break;
+
+    default:
+        break;
+    }
+
+    return BoardCoord{ newOffsetX, newOffsetY };
+}
+
+void Snake::Move(const BoardCoord& destCoord, bool isEatFood)
+{
+    SetBodyOnBoard(ETileState::NONE);
+
+    // 먹이를 먹었으면, 꼬리는 움직이지 않음.
+    size_t startIdx = isEatFood ? _bodys.size() - 2 : _bodys.size() - 1;
+    for (size_t idx = startIdx; idx >= 1; --idx)
+    {
+        _bodys[idx].offsetX = _bodys[idx - 1].offsetX;
+        _bodys[idx].offsetY = _bodys[idx - 1].offsetY;
+    }
+    _bodys.front() = destCoord;
+
+    SetBodyOnBoard(ETileState::BODY);
 }

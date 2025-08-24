@@ -32,6 +32,8 @@ private:
 	std::vector<BoardCoord> CreateBodys();
 
 	void SetBodyOnBoard(const ETileState& state);
+	BoardCoord CalculateDirectionBoardCoord(const BoardCoord& targetCoord, const EDirection& direction);
+	void Move(const BoardCoord& destCoord, bool isEatFood);
 
 private:
 	static const int32_t MIN_START_BODY_COUNT = 2;
@@ -43,4 +45,5 @@ private:
 
 	EDirection _startDirection = EDirection::NONE;
 	std::map<EDirection, BoardCoord> _startDirectionBias;
+	std::map<KeyboardKey, EDirection> _keyCodeDirections;
 };

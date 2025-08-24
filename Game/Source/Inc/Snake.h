@@ -23,6 +23,8 @@ public:
 	Snake(Board* board, int32_t startBodyCount, const EDirection& startDirection);
 	virtual ~Snake();
 
+	DISALLOW_COPY_AND_ASSIGN(Snake);
+
 	virtual void Tick(float deltaSeconds) override;
 	virtual void Render() override;
 	virtual void Release() override;

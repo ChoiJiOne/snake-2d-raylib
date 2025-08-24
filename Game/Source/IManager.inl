@@ -1,2 +1,2 @@
-template <typename T>
-T IManager<T>::_instance; // ¹İµå½Ã ¿©±â¼­ Á¤ÀÇ
+ï»¿template <typename T>
+T IManager<T>::_instance; // ë°˜ë“œì‹œ ì—¬ê¸°ì„œ ì •ì˜

@@ -72,13 +72,8 @@ int main(int argc, char* argv[])
         }
     }
     
-    float stepTime = 0.0f;
-    bool isGameOver = false;
-    EDirection lastDirection = EDirection::NONE;
     while (!WindowShouldClose()) 
     {
-        stepTime += GetFrameTime();
-        
         EDirection direction = EDirection::NONE;
         bool canMove = false;
         const BoardCoord& head = snake.bodys.front();
@@ -98,11 +93,10 @@ int main(int argc, char* argv[])
         {
             direction = EDirection::DOWN;
         }
-        lastDirection = direction;
 
         int newOffsetX = head.offsetX;
         int newOffsetY = head.offsetY;
-        switch (stepTime > 1.0f ? lastDirection : direction)
+        switch (direction)
         {
         case EDirection::LEFT:
             newOffsetX = (newOffsetX <= 0) ? board->GetColTileCount() - 1 : newOffsetX - 1;
@@ -160,12 +154,6 @@ int main(int argc, char* argv[])
             for (const auto& body : snake.bodys)
             {
                 board->SetTileState(body, ETileState::BODY);
-            }
-
-            stepTime = 0.0f;
-            if (stepTime > 1.0f)
-            {
-                stepTime = 0.0f;
             }
         }
 

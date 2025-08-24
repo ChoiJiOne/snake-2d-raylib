@@ -18,4 +18,8 @@ public:
 	virtual void Enter() override;
 	virtual void Exit() override;
 	virtual IPhase* GetTransitionPhase() override;
+
+private:
+	std::vector<IActor*> _tickActors;
+	std::vector<IActor*> _renderActors;
 };

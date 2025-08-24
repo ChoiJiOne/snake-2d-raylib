@@ -31,6 +31,7 @@ public:
 
 private:
 	std::vector<BoardCoord> CreateBodys();
+	EDirection GetDirectionFromInput();
 	void SetBodyOnBoard(const ETileState& state);
 	BoardCoord CalculateDirectionBoardCoord(const BoardCoord& targetCoord, const EDirection& direction);
 	bool TryMove(const BoardCoord& head, const EDirection& direction);
@@ -50,6 +51,7 @@ private:
 	EDirection _lastDirection = EDirection::NONE;
 	std::map<EDirection, BoardCoord> _startDirectionBias;
 	std::map<KeyboardKey, EDirection> _keyCodeDirections;
+	std::map<EDirection, EDirection> _counterDirections;
 
 	float _moveStepTime = 0.5f; // TODO: 임시 하드 코딩 (수정해야 함!)
 	float _stepTime = 0.0f;

@@ -35,6 +35,14 @@ Snake::Snake(Board* board, int32_t startBodyCount, const EDirection& startDirect
         { KEY_DOWN,  EDirection::DOWN  },
     };
 
+    _counterDirections =
+    {
+        { EDirection::LEFT,  EDirection::RIGHT, },
+        { EDirection::RIGHT, EDirection::LEFT,  },
+        { EDirection::UP,    EDirection::DOWN,  },
+        { EDirection::DOWN,  EDirection::UP,    },
+    };
+
 	_bodys = CreateBodys();
 	SetBodyOnBoard(ETileState::BODY);
 
@@ -59,20 +67,11 @@ void Snake::Tick(float deltaSeconds)
 
     _stepTime += deltaSeconds;
 
-    const BoardCoord& head = _bodys.front();
-    EDirection direction = EDirection::NONE;
-    for (const auto& keyCodeDirection : _keyCodeDirections)
-    {
-        if (IsKeyPressed(keyCodeDirection.first))
-        {
-            direction = keyCodeDirection.second;
-        }
-    }
-
+    EDirection direction = GetDirectionFromInput();
     if (direction != EDirection::NONE)
     {
         _lastDirection = direction;
-        if (!TryMove(head, direction))
+        if (!TryMove(_bodys.front(), direction))
         {
             _isStopped = true;
         }
@@ -84,7 +83,7 @@ void Snake::Tick(float deltaSeconds)
         return;
     }
 
-    if (!TryMove(head, _lastDirection))
+    if (!TryMove(_bodys.front(), _lastDirection))
     {
         _isStopped = true;
     }
@@ -126,6 +125,31 @@ std::vector<BoardCoord> Snake::CreateBodys()
 	}
 
 	return bodys;
+}
+
+EDirection Snake::GetDirectionFromInput()
+{
+    EDirection direction = EDirection::NONE;
+    for (const auto& keyCodeDirection : _keyCodeDirections)
+    {
+        if (IsKeyPressed(keyCodeDirection.first))
+        {
+            direction = keyCodeDirection.second;
+        }
+    }
+
+    if (direction == EDirection::NONE)
+    {
+        return direction;
+    }
+
+    // 현재 움직이고 있는 방향의 반대 방향을 입력하면 이동 처리를 하지 않음.
+    if (_counterDirections[_lastDirection] == direction)
+    {
+        return _lastDirection;
+    }
+
+    return direction;
 }
 
 void Snake::SetBodyOnBoard(const ETileState& state)

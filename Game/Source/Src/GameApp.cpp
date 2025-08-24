@@ -2,6 +2,7 @@
 #include "GameApp.h"
 #include "GameLog.h"
 #include "MainPhase.h"
+#include "TitlePhase.h"
 
 GameApp* GameApp::_gameAppPtr = nullptr;
 
@@ -35,9 +36,10 @@ void GameApp::Startup()
 
 void GameApp::Run()
 {
+    std::unique_ptr<TitlePhase> titlePhase = std::make_unique<TitlePhase>();
     std::unique_ptr<MainPhase> mainPhase = std::make_unique<MainPhase>();
 
-    IPhase* currentPhase = mainPhase.get();
+    IPhase* currentPhase = titlePhase.get();
     currentPhase->Enter();
     while (!WindowShouldClose())
     {

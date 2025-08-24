@@ -188,3 +188,9 @@ void Snake::MoveDirection(const BoardCoord& head, const EDirection& direction)
         _stepTime = 0.0f;
     }
 }
+
+bool Snake::CanMove(const BoardCoord& head, const EDirection& direction)
+{
+    BoardCoord moveBoardCoord = CalculateDirectionBoardCoord(head, direction);
+    return (_board->GetTileState(moveBoardCoord) != ETileState::BODY);
+}

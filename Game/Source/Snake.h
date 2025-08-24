@@ -32,6 +32,7 @@ private:
 	void SetBodyOnBoard(const ETileState& state);
 	BoardCoord CalculateDirectionBoardCoord(const BoardCoord& targetCoord, const EDirection& direction);
 	void MoveDirection(const BoardCoord& head, const EDirection& direction);
+	bool CanMove(const BoardCoord& head, const EDirection& direction);
 	void Move(const BoardCoord& destCoord, bool isEatFood);
 
 private:

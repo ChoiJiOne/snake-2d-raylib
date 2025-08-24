@@ -9,4 +9,4 @@ board:
   col_tile_count: 20
 snake:
   start_body_count: 4
-  start_direction: 4 # 1: LEFT, 2: RIGHT, 3: UP, 4: DOWN
+  start_direction: 2 # 1: LEFT, 2: RIGHT, 3: UP, 4: DOWN

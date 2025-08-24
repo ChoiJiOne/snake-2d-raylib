@@ -17,6 +17,13 @@ public:
 	void Run();
 	void Shutdown();
 
+	GameConfig* GetConfig() { return _gameConfig.get(); }
+
+	static GameApp* GetAppPtr() { return _gameAppPtr; }
+	
+private:
+	static GameApp* _gameAppPtr;
+
 private:
 	bool _isInitialized = false;
 	std::unique_ptr<GameConfig> _gameConfig = nullptr;

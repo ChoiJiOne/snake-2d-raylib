@@ -1,9 +1,9 @@
 #include "ActorManager.h"
-#include "Board.h"
-#include "Food.h"
 #include "GameApp.h"
 #include "GameLog.h"
-#include "Snake.h"
+#include "MainPhase.h"
+
+GameApp* GameApp::_gameAppPtr = nullptr;
 
 GameApp::~GameApp()
 {
@@ -29,55 +29,28 @@ void GameApp::Startup()
     
     ActorManager::Get().Startup();
     
+    _gameAppPtr = this;
 	_isInitialized = true;
 }
 
 void GameApp::Run()
 {
-    Board* board = ActorManager::Get().Create<Board>(
-        Vector2{ static_cast<float>(_gameConfig->GetWindowWidth()) / 2.0f, static_cast<float>(_gameConfig->GetWindowHeight()) / 2.0f },
-        _gameConfig->GetTileSize(),
-        _gameConfig->GetRowTileCount(),
-        _gameConfig->GetColTileCount()
-    );
-    Snake* snake = ActorManager::Get().Create<Snake>(
-        board, 
-        _gameConfig->GetStartBodyCount(),
-        static_cast<EDirection>(_gameConfig->GetStartDirection())
-    );
-    Food* food = ActorManager::Get().Create<Food>(board);
+    std::unique_ptr<MainPhase> mainPhase = std::make_unique<MainPhase>();
 
-    std::vector<IActor*> updateActors =
-    {
-        snake,
-        food,
-        board,
-    };
-
-    std::vector<IActor*> renderActors =
-    {
-        board,
-        snake,
-        food,
-    };
-
+    IPhase* currentPhase = mainPhase.get();
+    currentPhase->Enter();
     while (!WindowShouldClose())
     {
         float deltaSeconds = GetFrameTime();
-        for (auto& updateActor : updateActors)
-        {
-            updateActor->Tick(deltaSeconds);
-        }
+        currentPhase->Tick(deltaSeconds);
+        currentPhase->Render();
 
-        BeginDrawing();
+        if (currentPhase->GetActionState() == IPhase::EActionState::EXIT)
         {
-            ClearBackground(RAYWHITE);
-            for (auto& renderActor : renderActors)
-            {
-                renderActor->Render();
-            }
+            currentPhase->Exit();
+            currentPhase = currentPhase->GetTransitionPhase();
+            currentPhase->Enter();
         }
-        EndDrawing();
     }
 }
 
@@ -92,5 +65,6 @@ void GameApp::Shutdown()
     ActorManager::Get().Shutdown();
     CloseWindow();
 
+    _gameAppPtr = nullptr;
 	_isInitialized = false;
 }

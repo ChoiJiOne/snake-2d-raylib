@@ -22,8 +22,8 @@ struct Tile
 
 struct BoardCoord
 {
-	int offsetX;
-	int offsetY;
+	int32_t offsetX = 0;
+	int32_t offsetY = 0;
 };
 
 class Board : public IActor

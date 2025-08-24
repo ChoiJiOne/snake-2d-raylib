@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 #include <map>
@@ -17,7 +17,6 @@ enum class EDirection
 	DOWN  = 0x04,
 };
 
-
 class Snake : public IActor
 {
 public:
@@ -30,9 +29,9 @@ public:
 
 private:
 	std::vector<BoardCoord> CreateBodys();
-
 	void SetBodyOnBoard(const ETileState& state);
 	BoardCoord CalculateDirectionBoardCoord(const BoardCoord& targetCoord, const EDirection& direction);
+	void MoveDirection(const BoardCoord& head, const EDirection& direction);
 	void Move(const BoardCoord& destCoord, bool isEatFood);
 
 private:
@@ -44,6 +43,10 @@ private:
 	std::vector<BoardCoord> _bodys;
 
 	EDirection _startDirection = EDirection::NONE;
+	EDirection _lastDirection = EDirection::NONE;
 	std::map<EDirection, BoardCoord> _startDirectionBias;
 	std::map<KeyboardKey, EDirection> _keyCodeDirections;
+
+	float _moveStepTime = 0.5f; // TODO: 임시 하드 코딩 (수정해야 함!)
+	float _stepTime = 0.0f;
 };

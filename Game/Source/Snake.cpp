@@ -17,6 +17,7 @@ Snake::Snake(Board* board, int32_t startBodyCount, const EDirection& startDirect
 	{
 		_startDirection = startDirection;
 	}
+    _lastDirection = _startDirection;
 
 	_startDirectionBias =
 	{
@@ -50,6 +51,8 @@ Snake::~Snake()
 
 void Snake::Tick(float deltaSeconds)
 {
+    _stepTime += deltaSeconds;
+
     const BoardCoord& head = _bodys.front();
     EDirection direction = EDirection::NONE;
     for (const auto& keyCodeDirection : _keyCodeDirections)
@@ -60,25 +63,21 @@ void Snake::Tick(float deltaSeconds)
         }
     }
 
+    if (direction != EDirection::NONE)
+    {
+        _lastDirection = direction;
+    }
+
     if (direction == EDirection::NONE)
     {
-        // 움직임이 없으면 아무 동작도 수행하지 않음.
+        if (_stepTime >= _moveStepTime)
+        {
+            MoveDirection(head, _lastDirection);
+        }
         return;
     }
 
-    BoardCoord moveBoardCoord = CalculateDirectionBoardCoord(head, direction);
-
-    bool isEatFood = (_board->GetTileState(moveBoardCoord) == ETileState::FOOD);
-    if (isEatFood)
-    {
-        _bodys.emplace_back(_bodys.back());
-    }
-
-    bool canMove = (_board->GetTileState(moveBoardCoord) != ETileState::BODY);
-    if (canMove)
-    {
-        Move(moveBoardCoord, isEatFood);
-    }
+    MoveDirection(head, direction);
 }
 
 void Snake::Render()
@@ -170,4 +169,22 @@ void Snake::Move(const BoardCoord& destCoord, bool isEatFood)
     _bodys.front() = destCoord;
 
     SetBodyOnBoard(ETileState::BODY);
+}
+
+void Snake::MoveDirection(const BoardCoord& head, const EDirection& direction)
+{
+    BoardCoord moveBoardCoord = CalculateDirectionBoardCoord(head, direction);
+
+    bool isEatFood = (_board->GetTileState(moveBoardCoord) == ETileState::FOOD);
+    if (isEatFood)
+    {
+        _bodys.emplace_back(_bodys.back());
+    }
+
+    bool canMove = (_board->GetTileState(moveBoardCoord) != ETileState::BODY);
+    if (canMove)
+    {
+        Move(moveBoardCoord, isEatFood);
+        _stepTime = 0.0f;
+    }
 }

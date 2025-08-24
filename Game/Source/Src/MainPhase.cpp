@@ -36,8 +36,17 @@ void MainPhase::Enter()
         static_cast<float>(app->GetConfig()->GetWindowHeight()) / 2.0f
     };
 
-    Board* board = ActorManager::Get().Create<Board>(boardPosition, app->GetConfig()->GetTileSize(), app->GetConfig()->GetRowTileCount(), app->GetConfig()->GetColTileCount());
-    Snake* snake = ActorManager::Get().Create<Snake>(board, app->GetConfig()->GetStartBodyCount(), static_cast<EDirection>(app->GetConfig()->GetStartDirection()));
+    Board* board = ActorManager::Get().Create<Board>(
+        boardPosition, 
+        app->GetConfig()->GetTileSize(), 
+        app->GetConfig()->GetRowTileCount(), 
+        app->GetConfig()->GetColTileCount()
+    );
+    Snake* snake = ActorManager::Get().Create<Snake>(
+        board, 
+        app->GetConfig()->GetStartBodyCount(), 
+        static_cast<EDirection>(app->GetConfig()->GetStartDirection())
+    );
     Food* food = ActorManager::Get().Create<Food>(board);
 
     _tickActors = 

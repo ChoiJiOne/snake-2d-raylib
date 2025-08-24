@@ -22,7 +22,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 find_package(raylib CONFIG REQUIRED)
-find_package(fmt CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 
 add_subdirectory(Game)
 

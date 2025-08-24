@@ -9,7 +9,7 @@ file(GLOB_RECURSE GAME_SOURCE "${GAME_SOURCE_PATH}/**")
 
 add_executable(${GAME_PROJECT_NAME} ${GAME_SOURCE} ${GAME_HEADER_FILE} ${GAME_SOURCE_FILE})
 target_include_directories(${GAME_PROJECT_NAME} PUBLIC ${GAME_PROJECT_HEADER_FILE_PATH} ${GAME_PROJECT_SOURCE_FILE_PATH})
-target_link_libraries(${GAME_PROJECT_NAME} PUBLIC raylib fmt::fmt)
+target_link_libraries(${GAME_PROJECT_NAME} PUBLIC raylib yaml-cpp::yaml-cpp)
 
 target_compile_definitions(
     ${GAME_PROJECT_NAME}

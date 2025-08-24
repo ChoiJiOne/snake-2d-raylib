@@ -38,11 +38,27 @@ void GameConfig::Load(const std::string& path)
 		return;
 	}
 
-	YAML::Node windowNode = rootConfig["app"];
-	GAME_ASSERT(windowNode.IsDefined(), "UNDEFINED_APP_CONFIG_OBJECT(%s)", "window");
+	// app (GameConfig.yaml)
+	YAML::Node appNode = rootConfig["app"];
+	GAME_ASSERT(appNode.IsDefined(), "UNDEFINED_APP_CONFIG_OBJECT(%s)", "app");
 
-	GAME_CHECK(TryGetConfigValue<std::string>(windowNode, "title", _windowTitle));
-	GAME_CHECK(TryGetConfigValue<int>(windowNode, "width", _windowWidth));
-	GAME_CHECK(TryGetConfigValue<int>(windowNode, "height", _windowHeight));
-	GAME_CHECK(TryGetConfigValue<int>(windowNode, "fps", _fps));
+	GAME_CHECK(TryGetConfigValue<std::string>(appNode, "title", _windowTitle));
+	GAME_CHECK(TryGetConfigValue<int32_t>(appNode, "width", _windowWidth));
+	GAME_CHECK(TryGetConfigValue<int32_t>(appNode, "height", _windowHeight));
+	GAME_CHECK(TryGetConfigValue<int32_t>(appNode, "fps", _fps));
+
+	// board (GameConfig.yaml)
+	YAML::Node boardNode = rootConfig["board"];
+	GAME_ASSERT(boardNode.IsDefined(), "UNDEFINED_APP_CONFIG_OBJECT(%s)", "board");
+
+	GAME_CHECK(TryGetConfigValue<float>(boardNode, "tile_size", _tileSize));
+	GAME_CHECK(TryGetConfigValue<int32_t>(boardNode, "row_tile_count", _rowTileCount));
+	GAME_CHECK(TryGetConfigValue<int32_t>(boardNode, "col_tile_count", _colTileCount));
+
+	// snake (GameConfig.yaml)
+	YAML::Node snakeNode = rootConfig["snake"];
+	GAME_ASSERT(boardNode.IsDefined(), "UNDEFINED_APP_CONFIG_OBJECT(%s)", "snake");
+
+	GAME_CHECK(TryGetConfigValue<int32_t>(snakeNode, "start_body_count", _startBodyCount));
+	GAME_CHECK(TryGetConfigValue<int32_t>(snakeNode, "start_direction", _startDirection));
 }

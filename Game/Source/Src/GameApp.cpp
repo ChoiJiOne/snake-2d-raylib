@@ -36,11 +36,15 @@ void GameApp::Run()
 {
     Board* board = ActorManager::Get().Create<Board>(
         Vector2{ static_cast<float>(_gameConfig->GetWindowWidth()) / 2.0f, static_cast<float>(_gameConfig->GetWindowHeight()) / 2.0f },
-        20.0f, 
-        20, 
-        20
+        _gameConfig->GetTileSize(),
+        _gameConfig->GetRowTileCount(),
+        _gameConfig->GetColTileCount()
     );
-    Snake* snake = ActorManager::Get().Create<Snake>(board, 4, EDirection::RIGHT);
+    Snake* snake = ActorManager::Get().Create<Snake>(
+        board, 
+        _gameConfig->GetStartBodyCount(),
+        static_cast<EDirection>(_gameConfig->GetStartDirection())
+    );
     Food* food = ActorManager::Get().Create<Food>(board);
 
     std::vector<IActor*> updateActors =

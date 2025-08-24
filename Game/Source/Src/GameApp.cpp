@@ -1,3 +1,6 @@
+#define RAYGUI_IMPLEMENTATION
+#include <raygui.h>
+
 #include "ActorManager.h"
 #include "GameApp.h"
 #include "GameLog.h"

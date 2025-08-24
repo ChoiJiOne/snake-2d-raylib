@@ -2,21 +2,13 @@
 
 #include <raylib.h>
 
+#include "ActorManager.h"
+#include "Board.h"
 #include "GameAssert.h"
+#include "GameLog.h"
 
 const int screenWidth = 800;
 const int screenHeight = 800;
-
-Vector2 center{ static_cast<float>(screenWidth) / 2.0f, static_cast<float>(screenHeight) / 2.0f };
-float size = 20.0f;
-int count = 20;
-
-enum class EState
-{
-    NONE = 0x00,
-    BODY = 0x01,
-    FOOD = 0x02,
-};
 
 enum class EDirection
 {
@@ -27,65 +19,13 @@ enum class EDirection
     DOWN  = 0x04,
 };
 
-struct Body
-{
-    int offsetX;
-    int offsetY;
-};
-
-struct Food
-{
-    int offsetX;
-    int offsetY;
-};
-
 struct Snake
 {
-    std::vector<Body> bodys;
+    std::vector<BoardCoord> bodys;
 };
 
-struct Tile
-{
-    Vector2 position;
-    Vector2 size;
-    EState state;
-    int index;
-};
-
-std::vector<Tile> board;
 Snake snake;
-Food food;
-
-void DrawTileMapGrid()
-{
-    float x = center.x - size * count * 0.5f;
-    float y = center.y - size * count * 0.5f;
-
-    for (int yi = 0; yi <= count; ++yi)
-    {
-        DrawLineV(Vector2{ x, y + yi * size }, Vector2{ x + size * count, y + yi * size }, BLACK);
-    }
-
-    for (int xi = 0; xi <= count; ++xi)
-    {
-        DrawLineV(Vector2{ x + xi * size, y }, Vector2{ x + xi * size, y + size * count }, BLACK);
-    }
-}
-
-void DrawTileMap()
-{
-    for (const auto& tile : board)
-    {
-        if (tile.state == EState::BODY)
-        {
-            DrawRectangleV(tile.position, tile.size, RED);
-        }
-        else if (tile.state == EState::FOOD)
-        {
-            DrawRectangleV(tile.position, tile.size, BLUE);
-        }
-    }
-}
+BoardCoord food;
 
 int main(int argc, char* argv[])
 {
@@ -94,31 +34,20 @@ int main(int argc, char* argv[])
     InitWindow(screenWidth, screenHeight, "Snake");
     SetTargetFPS(60);
 
-    float x = center.x - size * count * 0.5f;
-    float y = center.y - size * count * 0.5f;
-    for (int yi = 0; yi < count; ++yi)
-    {
-        for (int xi = 0; xi < count; ++xi)
-        {
-            Tile tile;
-            tile.position = Vector2{ x + xi * size, y + yi * size };
-            tile.size = Vector2{ size, size };
-            tile.state = EState::NONE;
-            tile.index = xi + yi * count;
-            board.emplace_back(tile);
-        }
-    }
+    ActorManager::Get().Startup();
 
-    Body body0;
-    body0.offsetX = count / 2;
-    body0.offsetY = count / 2;
-    Body body1;
+    Board* board = ActorManager::Get().Create<Board>(Vector2{ static_cast<float>(screenWidth) / 2.0f, static_cast<float>(screenHeight) / 2.0f }, 20.0f, 20, 20);
+
+    BoardCoord body0;
+    body0.offsetX = board->GetColTileCount() / 2;
+    body0.offsetY = board->GetRowTileCount() / 2;
+    BoardCoord body1;
     body1.offsetX = body0.offsetX - 1;
     body1.offsetY = body0.offsetY;
-    Body body2;
+    BoardCoord body2;
     body2.offsetX = body1.offsetX - 1;
     body2.offsetY = body1.offsetY;
-    Body body3;
+    BoardCoord body3;
     body3.offsetX = body2.offsetX - 1;
     body3.offsetY = body2.offsetY;
     snake.bodys.emplace_back(body0);
@@ -128,19 +57,17 @@ int main(int argc, char* argv[])
 
     for (const auto& body : snake.bodys)
     {
-        int offset = body.offsetX + body.offsetY * count; 
-        board[offset].state = EState::BODY;
+        board->SetTileState(body, ETileState::BODY);
     }
 
     while (true)
     {
-        food.offsetX = GetRandomValue(0, count - 1);
-        food.offsetY = GetRandomValue(0, count - 1);
+        food.offsetX = GetRandomValue(0, board->GetColTileCount() - 1);
+        food.offsetY = GetRandomValue(0, board->GetRowTileCount() - 1);
 
-        int offset = food.offsetX + food.offsetY * count;
-        if (board[offset].state == EState::NONE)
+        if (board->GetTileState(food) == ETileState::NONE)
         {
-            board[offset].state = EState::FOOD;
+            board->SetTileState(food, ETileState::FOOD);
             break;
         }
     }
@@ -152,10 +79,9 @@ int main(int argc, char* argv[])
     {
         stepTime += GetFrameTime();
         
-
         EDirection direction = EDirection::NONE;
         bool canMove = false;
-        const Body& head = snake.bodys.front();
+        const BoardCoord& head = snake.bodys.front();
         if (IsKeyPressed(KEY_RIGHT))
         {
             direction = EDirection::RIGHT;
@@ -179,31 +105,30 @@ int main(int argc, char* argv[])
         switch (stepTime > 1.0f ? lastDirection : direction)
         {
         case EDirection::LEFT:
-            newOffsetX = (newOffsetX <= 0) ? count - 1 : newOffsetX - 1;
+            newOffsetX = (newOffsetX <= 0) ? board->GetColTileCount() - 1 : newOffsetX - 1;
             break;
 
         case EDirection::RIGHT:
-            newOffsetX = (newOffsetX + 1) % count;
+            newOffsetX = (newOffsetX + 1) % board->GetColTileCount();
             break;
 
         case EDirection::UP:
-            newOffsetY = (newOffsetY <= 0) ? count - 1 : newOffsetY - 1;
+            newOffsetY = (newOffsetY <= 0) ? board->GetRowTileCount() - 1 : newOffsetY - 1;
             break;
 
         case EDirection::DOWN:
-            newOffsetY = (newOffsetY + 1) % count;
+            newOffsetY = (newOffsetY + 1) % board->GetRowTileCount();
             break;
 
         default:
             break;
         }
 
-        int offset = newOffsetX + newOffsetY * count;
         bool isEatFood = false;
-        if (direction != EDirection::NONE && board[offset].state != EState::BODY)
+        if (direction != EDirection::NONE && board->GetTileState(BoardCoord{ newOffsetX, newOffsetY }) != ETileState::BODY)
         {
             canMove = true;
-            if (board[offset].state == EState::FOOD)
+            if (board->GetTileState(BoardCoord{ newOffsetX, newOffsetY }) == ETileState::FOOD)
             {
                 isEatFood = true;
                 snake.bodys.emplace_back(snake.bodys.back());
@@ -214,8 +139,7 @@ int main(int argc, char* argv[])
         {
             for (const auto& body : snake.bodys)
             {
-                int offset = body.offsetX + body.offsetY * count;
-                board[offset].state = EState::NONE;
+                board->SetTileState(body, ETileState::NONE);
             }
 
             size_t startIdx = snake.bodys.size() - 1;
@@ -235,8 +159,7 @@ int main(int argc, char* argv[])
 
             for (const auto& body : snake.bodys)
             {
-                int offset = body.offsetX + body.offsetY * count;
-                board[offset].state = EState::BODY;
+                board->SetTileState(body, ETileState::BODY);
             }
 
             stepTime = 0.0f;
@@ -250,13 +173,12 @@ int main(int argc, char* argv[])
         {
             while (true)
             {
-                food.offsetX = GetRandomValue(0, count - 1);
-                food.offsetY = GetRandomValue(0, count - 1);
+                food.offsetX = GetRandomValue(0, board->GetColTileCount() - 1);
+                food.offsetY = GetRandomValue(0, board->GetRowTileCount() - 1);
 
-                int offset = food.offsetX + food.offsetY * count;
-                if (board[offset].state == EState::NONE)
+                if (board->GetTileState(food) == ETileState::NONE)
                 {
-                    board[offset].state = EState::FOOD;
+                    board->SetTileState(food, ETileState::FOOD);
                     break;
                 }
             }
@@ -266,12 +188,12 @@ int main(int argc, char* argv[])
         {
             ClearBackground(RAYWHITE);
 
-            DrawTileMap();
-            DrawTileMapGrid();
+            board->Render();
         }
         EndDrawing();
     }
 
+    ActorManager::Get().Shutdown();
     CloseWindow();
 	return 0;
 }

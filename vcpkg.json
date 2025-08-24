@@ -1,6 +1,7 @@
 {
   "dependencies": [
     "raylib",
-    "yaml-cpp"
+    "yaml-cpp",
+    "raygui"
   ]
 }

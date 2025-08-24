@@ -51,6 +51,12 @@ Snake::~Snake()
 
 void Snake::Tick(float deltaSeconds)
 {
+    // 움직일 수 없다면 아무 것도 하지 않음.
+    if (_isStopped)
+    {
+        return;
+    }
+
     _stepTime += deltaSeconds;
 
     const BoardCoord& head = _bodys.front();
@@ -66,18 +72,22 @@ void Snake::Tick(float deltaSeconds)
     if (direction != EDirection::NONE)
     {
         _lastDirection = direction;
-    }
-
-    if (direction == EDirection::NONE)
-    {
-        if (_stepTime >= _moveStepTime)
+        if (!TryMove(head, direction))
         {
-            MoveDirection(head, _lastDirection);
+            _isStopped = true;
         }
         return;
     }
 
-    MoveDirection(head, direction);
+    if (_stepTime < _moveStepTime)
+    {
+        return;
+    }
+
+    if (!TryMove(head, _lastDirection))
+    {
+        _isStopped = true;
+    }
 }
 
 void Snake::Render()
@@ -153,6 +163,17 @@ BoardCoord Snake::CalculateDirectionBoardCoord(const BoardCoord& targetCoord, co
     }
 
     return BoardCoord{ newOffsetX, newOffsetY };
+}
+
+bool Snake::TryMove(const BoardCoord& head, const EDirection& direction)
+{
+    if (!CanMove(head, direction))
+    {
+        return false;
+    }
+
+    MoveDirection(head, direction);
+    return true;
 }
 
 void Snake::Move(const BoardCoord& destCoord, bool isEatFood)

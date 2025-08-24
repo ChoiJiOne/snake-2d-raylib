@@ -27,10 +27,13 @@ public:
 	virtual void Render() override;
 	virtual void Release() override;
 
+	bool IsStopped() const { return _isStopped; }
+
 private:
 	std::vector<BoardCoord> CreateBodys();
 	void SetBodyOnBoard(const ETileState& state);
 	BoardCoord CalculateDirectionBoardCoord(const BoardCoord& targetCoord, const EDirection& direction);
+	bool TryMove(const BoardCoord& head, const EDirection& direction);
 	void MoveDirection(const BoardCoord& head, const EDirection& direction);
 	bool CanMove(const BoardCoord& head, const EDirection& direction);
 	void Move(const BoardCoord& destCoord, bool isEatFood);
@@ -50,4 +53,6 @@ private:
 
 	float _moveStepTime = 0.5f; // TODO: 임시 하드 코딩 (수정해야 함!)
 	float _stepTime = 0.0f;
+
+	bool _isStopped = false;
 };

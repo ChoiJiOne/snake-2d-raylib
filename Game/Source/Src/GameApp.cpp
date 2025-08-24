@@ -21,19 +21,25 @@ void GameApp::Startup()
 		return;
 	}
 
+    _gameConfig = std::make_unique<GameConfig>();
+    _gameConfig->Load("Config/GameConfig.yaml");
+
+    InitWindow(_gameConfig->GetWindowWidth(), _gameConfig->GetWindowHeight(), _gameConfig->GetWindowTitle().c_str());
+    SetTargetFPS(_gameConfig->GetFPS());
+    
+    ActorManager::Get().Startup();
+    
 	_isInitialized = true;
 }
 
 void GameApp::Run()
 {
-    const int screenWidth = 800;
-    const int screenHeight = 800;
-    InitWindow(screenWidth, screenHeight, "Snake");
-    SetTargetFPS(60);
-
-    ActorManager::Get().Startup();
-
-    Board* board = ActorManager::Get().Create<Board>(Vector2{ static_cast<float>(screenWidth) / 2.0f, static_cast<float>(screenHeight) / 2.0f }, 20.0f, 20, 20);
+    Board* board = ActorManager::Get().Create<Board>(
+        Vector2{ static_cast<float>(_gameConfig->GetWindowWidth()) / 2.0f, static_cast<float>(_gameConfig->GetWindowHeight()) / 2.0f },
+        20.0f, 
+        20, 
+        20
+    );
     Snake* snake = ActorManager::Get().Create<Snake>(board, 4, EDirection::RIGHT);
     Food* food = ActorManager::Get().Create<Food>(board);
 
@@ -69,9 +75,6 @@ void GameApp::Run()
         }
         EndDrawing();
     }
-
-    ActorManager::Get().Shutdown();
-    CloseWindow();
 }
 
 void GameApp::Shutdown()
@@ -81,6 +84,9 @@ void GameApp::Shutdown()
 		GAME_LOG_ERR("ALREADY_SHUTDOWN_OR_FAILED_TO_STARTUP_GAMEAPP");
 		return;
 	}
+
+    ActorManager::Get().Shutdown();
+    CloseWindow();
 
 	_isInitialized = false;
 }

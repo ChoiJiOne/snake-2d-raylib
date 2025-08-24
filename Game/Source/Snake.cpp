@@ -1,4 +1,4 @@
-#include "GameAssert.h"
+ï»¿#include "GameAssert.h"
 #include "GameLog.h"
 #include "Snake.h"
 
@@ -147,7 +147,7 @@ std::vector<BoardCoord> Snake::CreateBodys()
 	std::vector<BoardCoord> bodys(_startBodyCount);
 	for (size_t idx = 0; idx < bodys.size(); ++idx)
 	{
-		if (idx == 0) // ¸Ó¸® ºÎºÐ
+		if (idx == 0) // ë¨¸ë¦¬ ë¶€ë¶„
 		{
 			bodys[idx].offsetX = _board->GetColTileCount() / 2;
 			bodys[idx].offsetY = _board->GetRowTileCount() / 2;

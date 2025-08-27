@@ -5,6 +5,7 @@
 #include "GameApp.h"
 #include "GameLog.h"
 #include "MainPhase.h"
+#include "PhaseManager.h"
 #include "TitlePhase.h"
 
 GameApp* GameApp::_gameAppPtr = nullptr;
@@ -32,6 +33,7 @@ void GameApp::Startup()
     SetTargetFPS(_gameConfig->GetFPS());
     
     ActorManager::Get().Startup();
+    PhaseManager::Get().Startup();
     
     _gameAppPtr = this;
 	_isInitialized = true;
@@ -39,10 +41,10 @@ void GameApp::Startup()
 
 void GameApp::Run()
 {
-    std::unique_ptr<TitlePhase> titlePhase = std::make_unique<TitlePhase>();
-    std::unique_ptr<MainPhase> mainPhase = std::make_unique<MainPhase>();
+    TitlePhase* titlePhase = PhaseManager::Get().Create<TitlePhase>();
+    MainPhase* mainPhase = PhaseManager::Get().Create<MainPhase>();
 
-    IPhase* currentPhase = titlePhase.get();
+    IPhase* currentPhase = mainPhase;
     currentPhase->Enter();
     while (!WindowShouldClose())
     {
@@ -67,6 +69,7 @@ void GameApp::Shutdown()
 		return;
 	}
 
+    PhaseManager::Get().Shutdown();
     ActorManager::Get().Shutdown();
     CloseWindow();
 

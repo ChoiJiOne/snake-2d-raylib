@@ -21,5 +21,33 @@ void PhaseManager::Shutdown()
 		return;
 	}
 
+	for (size_t idx = 0; idx < _phasePool.size(); ++idx)
+	{
+		if (_phasePool[idx].phase)
+		{
+			_phasePool[idx].phase.reset();
+			_phasePool[idx].isOccupied = false;
+		}
+	}
+
 	_isInitialized = false;
+}
+
+void PhaseManager::Destroy(const IPhase* phase)
+{
+	int32_t phaseID = -1;
+	for (size_t idx = 0; idx < _phasePool.size(); ++idx)
+	{
+		if (phase == _phasePool[idx].phase.get())
+		{
+			phaseID = static_cast<int32_t>(idx);
+			break;
+		}
+	}
+
+	if (phaseID != -1 && _phasePool[phaseID].phase)
+	{
+		_phasePool[phaseID].phase.reset();
+		_phasePool[phaseID].isOccupied = false;
+	}
 }

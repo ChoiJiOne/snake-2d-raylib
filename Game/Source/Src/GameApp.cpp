@@ -3,6 +3,7 @@
 
 #include "ActorManager.h"
 #include "GameApp.h"
+#include "GameAssert.h"
 #include "GameLog.h"
 #include "MainPhase.h"
 #include "PhaseManager.h"
@@ -34,30 +35,31 @@ void GameApp::Startup()
     
     ActorManager::Get().Startup();
     PhaseManager::Get().Startup();
-    
+
+    TitlePhase* titlePhase = PhaseManager::Get().Create<TitlePhase>();
+    PhaseManager::Get().Register("TitlePhase", titlePhase);
+
+    MainPhase* mainPhase = PhaseManager::Get().Create<MainPhase>();
+    PhaseManager::Get().Register("MainPhase", mainPhase);
+
+    _entryPhase = titlePhase;
     _gameAppPtr = this;
+    _isDoneLoop = false;
 	_isInitialized = true;
 }
 
 void GameApp::Run()
 {
-    TitlePhase* titlePhase = PhaseManager::Get().Create<TitlePhase>();
-    MainPhase* mainPhase = PhaseManager::Get().Create<MainPhase>();
+    _currentPhase = _entryPhase;
+    _currentPhase->Enter();
 
-    IPhase* currentPhase = titlePhase;
-    currentPhase->Enter();
-    while (!WindowShouldClose())
+    while (!_isDoneLoop)
     {
         float deltaSeconds = GetFrameTime();
-        currentPhase->Tick(deltaSeconds);
-        currentPhase->Render();
+        _currentPhase->Tick(deltaSeconds);
+        _currentPhase->Render();
 
-        if (currentPhase->GetActionState() == IPhase::EActionState::EXIT)
-        {
-            currentPhase->Exit();
-            currentPhase = currentPhase->GetTransitionPhase();
-            currentPhase->Enter();
-        }
+        ProcessPhaseActionState();
     }
 }
 
@@ -69,10 +71,36 @@ void GameApp::Shutdown()
 		return;
 	}
 
+    PhaseManager::Get().Unregister("MainPhase");
+    PhaseManager::Get().Unregister("TitlePhase");
+
     PhaseManager::Get().Shutdown();
     ActorManager::Get().Shutdown();
     CloseWindow();
 
     _gameAppPtr = nullptr;
 	_isInitialized = false;
+}
+
+void GameApp::ProcessPhaseActionState()
+{
+    GAME_CHECK(_currentPhase != nullptr);
+
+    switch (_currentPhase->GetActionState())
+    {
+    case IPhase::EActionState::EXIT_PHASE:
+        _currentPhase->Exit();
+        _currentPhase = _currentPhase->GetTransitionPhase();
+        _currentPhase->Enter();
+        break;
+
+    case IPhase::EActionState::QUIT_LOOP:
+        _currentPhase->Exit();
+        _isDoneLoop = true;
+        break;
+
+    default:
+        // 아무 것도 안함...
+        break;
+    }
 }

@@ -5,17 +5,11 @@
 class IPhase
 {
 public:
-	enum class EState
-	{
-		IDLE,
-		LOOP,
-	};
-
 	enum class EActionState
 	{
-		IDLE  = 0,
-		ENTER = 1,
-		EXIT  = 2,
+		NONE = 0x00,
+		EXIT_PHASE = 0x01, // 페이즈 탈출
+		QUIT_LOOP = 0x02, // 루프 종료
 	};
 
 public:
@@ -30,10 +24,8 @@ public:
 	virtual void Exit() = 0;
 	virtual IPhase* GetTransitionPhase() = 0;
 
-	EState GetState() { return _state; }
-	EActionState GetActionState() { return _actionState; }
+	const EActionState& GetActionState() const { return _actionState; }
 
 protected:
-	EState _state = EState::IDLE;
-	EActionState _actionState = EActionState::IDLE;
+	EActionState _actionState = EActionState::NONE;
 };

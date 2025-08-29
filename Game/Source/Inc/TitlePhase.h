@@ -20,6 +20,12 @@ public:
 	virtual IPhase* GetTransitionPhase() override;
 
 private:
+	void LoadActors();
+
+private:
+	bool _isActorsLoaded = false;
+	IPhase* _transitionPhase = nullptr;
+
 	std::vector<IActor*> _tickActors;
 	std::vector<IActor*> _renderActors;
 };

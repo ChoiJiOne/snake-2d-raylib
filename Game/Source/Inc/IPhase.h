@@ -25,6 +25,7 @@ public:
 	virtual IPhase* GetTransitionPhase() = 0;
 
 	const EActionState& GetActionState() const { return _actionState; }
+	void SetActionState(const EActionState& actionState) { _actionState = actionState; }
 
 protected:
 	EActionState _actionState = EActionState::NONE;

@@ -44,7 +44,7 @@ void GameApp::Run()
     TitlePhase* titlePhase = PhaseManager::Get().Create<TitlePhase>();
     MainPhase* mainPhase = PhaseManager::Get().Create<MainPhase>();
 
-    IPhase* currentPhase = mainPhase;
+    IPhase* currentPhase = titlePhase;
     currentPhase->Enter();
     while (!WindowShouldClose())
     {

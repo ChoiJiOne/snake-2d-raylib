@@ -1,6 +1,7 @@
 #include "ActorManager.h"
 #include "Button.h"
 #include "GameLog.h"
+#include "Text.h"
 #include "TitlePhase.h"
 
 #include <raygui.h>
@@ -29,15 +30,22 @@ void TitlePhase::Render()
 void TitlePhase::Enter()
 {
     // 여기, UI 위치 및 크기 하드코딩된 거 외부로 빼는 것 고려해보기.
+    Text* titleText = ActorManager::Get().Create<Text>(
+        Vector2{ 300.0f, 200.0f },
+        "SNAKE",
+        100,
+        GRAY
+    );
+
     Button* startButton = ActorManager::Get().Create<Button>(
-        Vector2{ 300.0f, 400.0f },
+        Vector2{ 300.0f, 350.0f },
         Vector2{ 200.0f, 50.0f  },
         [&]() { GAME_LOG_INFO("PRESS_START_BUTTON!"); },
         "START"
     );
 
     Button* quitButton = ActorManager::Get().Create<Button>(
-        Vector2{ 300.0f, 480.0f },
+        Vector2{ 300.0f, 430.0f },
         Vector2{ 200.0f, 50.0f },
         [&]() { GAME_LOG_INFO("PRESS_QUIT_BUTTON!"); },
         "QUIT"
@@ -47,10 +55,12 @@ void TitlePhase::Enter()
     {
         startButton,
         quitButton,
+        titleText,
     };
 
     _renderActors =
-    {
+    { 
+        titleText,
         startButton,
         quitButton,
     };

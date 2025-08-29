@@ -51,3 +51,31 @@ void PhaseManager::Destroy(const IPhase* phase)
 		_phasePool[phaseID].isOccupied = false;
 	}
 }
+
+void PhaseManager::Register(const std::string& name, IPhase* phase)
+{
+	auto it = _phaseCacheMap.find(name);
+	GAME_ASSERT(it == _phaseCacheMap.end(), "ALREADY_REGISTER_PHASE(name:%s)", name.c_str());
+
+	_phaseCacheMap.insert({ name, phase });
+}
+
+void PhaseManager::Unregister(const std::string& name)
+{
+	auto it = _phaseCacheMap.find(name);
+	GAME_ASSERT(it != _phaseCacheMap.end(), "ALREADY_UNREGISTER_PHASE_OR_NOT_REGISTER(name:%s)", name.c_str());
+
+	_phaseCacheMap.erase(it);
+}
+
+IPhase* PhaseManager::GetRegisteredPhase(const std::string& name)
+{
+	auto it = _phaseCacheMap.find(name);
+	if (it == _phaseCacheMap.end())
+	{
+		GAME_LOG_ERR("FAILED_TO_GET_REGISTERED_PHASE(name:%s)", name.c_str());
+		return nullptr;
+	}
+
+	return it->second;
+}

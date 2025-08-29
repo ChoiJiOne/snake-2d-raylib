@@ -43,6 +43,10 @@ public:
 
     void Destroy(const IPhase* phase);
 
+    void Register(const std::string& name, IPhase* phase);
+    void Unregister(const std::string& name);
+    IPhase* GetRegisteredPhase(const std::string& name);
+
 private:
 	friend class IManager<PhaseManager>;
 
@@ -57,4 +61,5 @@ private:
 
 private:
 	std::vector<PhasePoolSlot> _phasePool;
+    std::map<std::string, IPhase*> _phaseCacheMap;
 };

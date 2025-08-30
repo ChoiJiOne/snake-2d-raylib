@@ -70,6 +70,9 @@ void MainPhase::Enter()
         },
         30,
         GRAY,
+        GREEN,
+        0.2f,
+        1.0f,
         snake
     );
 

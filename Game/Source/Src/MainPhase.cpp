@@ -1,6 +1,7 @@
 #include "ActorManager.h"
 #include "Board.h"
 #include "Food.h"
+#include "FoodEatenEffect.h"
 #include "GameApp.h"
 #include "GameLog.h"
 #include "MainPhase.h"
@@ -30,7 +31,7 @@ void MainPhase::Tick(float deltaSeconds)
 
 void MainPhase::Render()
 {
-    BeginDrawing();
+    BeginDrawing(); 
     {
         ClearBackground(RAYWHITE);
         for (auto& renderActor : _renderActors)
@@ -61,7 +62,9 @@ void MainPhase::Enter()
         app->GetConfig()->GetStartBodyCount(), 
         static_cast<EDirection>(app->GetConfig()->GetStartDirection())
     );
-    Food* food = ActorManager::Get().Create<Food>(board);
+
+    FoodEatenEffect* effect = ActorManager::Get().Create<FoodEatenEffect>(20, GRAY, GREEN, 0.1f, 0.5f, 20.0f);
+    Food* food = ActorManager::Get().Create<Food>(board, effect);
 
     Score* score = ActorManager::Get().Create<Score>(
         Vector2{
@@ -76,9 +79,9 @@ void MainPhase::Enter()
         snake
     );
 
-    _phaseActors = { board, snake, food, score };
-    _tickActors = { snake, food, board, score };
-    _renderActors = { board, snake, food, score };
+    _phaseActors = { board, snake, food, effect, score };
+    _tickActors = { snake, food, board, effect, score };
+    _renderActors = { board, snake, food, effect, score };
 }
 
 void MainPhase::Exit()

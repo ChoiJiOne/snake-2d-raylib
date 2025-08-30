@@ -48,6 +48,13 @@ const ETileState& Board::GetTileState(const BoardCoord& boardCoord) const
 	return _tiles[offset].state;
 }
 
+const Tile& Board::GetTile(const BoardCoord& boardCoord) const
+{
+	GAME_CHECK(IsValid(boardCoord));
+	int32_t offset = boardCoord.offsetX + boardCoord.offsetY * _colTileCount;
+	return _tiles[offset];
+}
+
 void Board::SetTileState(const BoardCoord& boardCoord, const ETileState& tileState)
 {
 	GAME_CHECK(IsValid(boardCoord));

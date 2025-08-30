@@ -2,8 +2,9 @@
 #include "GameAssert.h"
 #include "GameLog.h"
 
-Food::Food(Board* board)
+Food::Food(Board* board, FoodEatenEffect* effect)
 	: _board(board)
+	, _effect(effect)
 {
 	// 처음에 실패하면 설정에 이슈 있음.
 	GAME_ASSERT(TrySetRandomCoord(), "INVALID_BOARD_STATE_OR_SNAKE_START_BODY_SIZE");
@@ -20,11 +21,12 @@ Food::~Food()
 
 void Food::Tick(float deltaSeconds)
 {
-	if (_board->GetTileState(_boardCoord) == ETileState::FOOD)
+	if (!IsEaten())
 	{
 		return;
 	}
 
+	StartEatenEffect();
 	if (!TrySetRandomCoord())
 	{
 		// TODO: 더 이상 보드에 채울 수 없을 때의 적절한 처리 필요 (EX. 게임 오버)
@@ -44,6 +46,11 @@ void Food::Release()
 	}
 
 	_isInitialized = false;
+}
+
+bool Food::IsEaten()
+{
+	return _board->GetTileState(_boardCoord) != ETileState::FOOD;
 }
 
 bool Food::TrySetRandomCoord()
@@ -68,4 +75,11 @@ bool Food::TrySetRandomCoord()
 	}
 
 	return true;
+}
+
+void Food::StartEatenEffect()
+{
+	const Tile& tile = _board->GetTile(_boardCoord);
+	Vector2 center{ tile.position.x + tile.size.x * 0.5f, tile.position.y + tile.size.y * 0.5f };
+	_effect->StartEffect(center);
 }

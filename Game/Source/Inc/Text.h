@@ -41,11 +41,11 @@ public:
 	void SetColor(const Color& color);
 	void SetProperties(const Vector2& center, const std::string& text, int32_t fontSize, const Color& color);
 	
-private:
+protected:
 	// Setter 호출 시 요 함수 호출해주어야 함.
 	void CalculateTextProperties();
 	
-private:
+protected:
 	Vector2 _center;
 	Vector2 _position; // 좌측 상단 좌표. (외부 설정 X)
 	Vector2 _size; // 외부 설정 X

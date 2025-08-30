@@ -140,17 +140,12 @@ EDirection Snake::GetDirectionFromInput()
         }
     }
 
-    if (direction == EDirection::NONE)
+    // 방향이 없거나, 현재 움직이고 있는 방향의 반대 방향을 입력하면 이동 처리를 하지 않음.
+    if (direction == EDirection::NONE || _counterDirections[_lastDirection] == direction)
     {
-        return direction;
+        return EDirection::NONE;
     }
-
-    // 현재 움직이고 있는 방향의 반대 방향을 입력하면 이동 처리를 하지 않음.
-    if (_counterDirections[_lastDirection] == direction)
-    {
-        return _lastDirection;
-    }
-
+    
     return direction;
 }
 

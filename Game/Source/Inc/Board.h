@@ -42,6 +42,7 @@ public:
 	const int32_t& GetRowTileCount() const { return _rowTileCount; }
 	const int32_t& GetColTileCount() const { return _colTileCount; }
 	const ETileState& GetTileState(const BoardCoord& boardCoord) const;
+	const Tile& GetTile(const BoardCoord& boardCoord) const;
 
 	void SetTileState(const BoardCoord& boardCoord, const ETileState& tileState);
 

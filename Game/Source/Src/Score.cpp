@@ -37,6 +37,7 @@ void Score::Tick(float deltaSeconds)
 		UpdateScore(_score + 1);
 
 		_effectStepTime = 0.0f;
+		_effectFlashStepTime = 0.0f;
 		_isShowEffect = true;
 	}
 

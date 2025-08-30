@@ -1,6 +1,8 @@
 ﻿#include "GameAssert.h"
 #include "GameLog.h"
 #include "Snake.h"
+#include "MainPhase.h"
+#include "PhaseManager.h"
 
 Snake::Snake(Board* board, int32_t startBodyCount, const EDirection& startDirection)
 {
@@ -73,7 +75,7 @@ void Snake::Tick(float deltaSeconds)
         _lastDirection = direction;
         if (!TryMove(_bodys.front(), direction))
         {
-            _isStopped = true;
+            Stop();
         }
         return;
     }
@@ -85,7 +87,7 @@ void Snake::Tick(float deltaSeconds)
 
     if (!TryMove(_bodys.front(), _lastDirection))
     {
-        _isStopped = true;
+        Stop();
     }
 }
 
@@ -214,6 +216,20 @@ void Snake::Move(const BoardCoord& destCoord, bool isEatFood)
     _bodys.front() = destCoord;
 
     SetBodyOnBoard(ETileState::BODY);
+}
+
+void Snake::Stop()
+{
+    if (_isStopped)
+    {
+        // 이미 중지 상태라면 아무 것도 하지 않음.
+        return;
+    }
+
+    _isStopped = true;
+
+    MainPhase* mainPhase = reinterpret_cast<MainPhase*>(PhaseManager::Get().GetRegisteredPhase("MainPhase"));
+    mainPhase->SetGameOver(_isStopped);
 }
 
 void Snake::MoveDirection(const BoardCoord& head, const EDirection& direction)

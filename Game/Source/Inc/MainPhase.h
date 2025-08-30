@@ -19,7 +19,13 @@ public:
 	virtual void Exit() override;
 	virtual IPhase* GetTransitionPhase() override;
 
+	void SetGameOver(bool isOver) { _isOver = isOver; }
+
 private:
+	bool _isOver;
+	IPhase* _transitionPhase = nullptr;
+
+	std::vector<IActor*> _phaseActors;
 	std::vector<IActor*> _tickActors;
 	std::vector<IActor*> _renderActors;
 };

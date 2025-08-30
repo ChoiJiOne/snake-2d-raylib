@@ -2,7 +2,7 @@
 #include "GameAssert.h"
 #include "GameLog.h"
 
-Food::Food(Board* board, FoodEatenEffect* effect)
+Food::Food(Board* board, TextEffect* effect)
 	: _board(board)
 	, _effect(effect)
 {
@@ -26,7 +26,7 @@ void Food::Tick(float deltaSeconds)
 		return;
 	}
 
-	StartEatenEffect();
+	StartEffect();
 	if (!TrySetRandomCoord())
 	{
 		// TODO: 더 이상 보드에 채울 수 없을 때의 적절한 처리 필요 (EX. 게임 오버)
@@ -77,7 +77,7 @@ bool Food::TrySetRandomCoord()
 	return true;
 }
 
-void Food::StartEatenEffect()
+void Food::StartEffect()
 {
 	const Tile& tile = _board->GetTile(_boardCoord);
 	Vector2 center{ tile.position.x + tile.size.x * 0.5f, tile.position.y + tile.size.y * 0.5f };

@@ -2,10 +2,11 @@
 
 #include "Text.h"
 
-class FoodEatenEffect : public Text
+class TextEffect : public Text
 {
 public:
-	FoodEatenEffect(
+	TextEffect(
+		const std::string& text,
 		int32_t fontSize,
 		const Color& defaultColor,
 		const Color& effectColor,
@@ -13,9 +14,9 @@ public:
 		float effectTime,
 		float moveLength
 	);
-	virtual ~FoodEatenEffect();
+	virtual ~TextEffect();
 
-	DISALLOW_COPY_AND_ASSIGN(FoodEatenEffect);
+	DISALLOW_COPY_AND_ASSIGN(TextEffect);
 
 	virtual void Tick(float deltaSeconds) override;
 	virtual void Render() override;

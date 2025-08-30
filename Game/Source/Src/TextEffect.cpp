@@ -1,14 +1,15 @@
-#include "FoodEatenEffect.h"
+#include "TextEffect.h"
 #include "GameLog.h"
 
-FoodEatenEffect::FoodEatenEffect(
+TextEffect::TextEffect(
+	const std::string& text,
 	int32_t fontSize, 
 	const Color& defaultColor,
 	const Color& effectColor, 
 	float effectFlashTime, 
 	float effectTime,
 	float moveLength
-) : Text(Vector2{0.0f, 0.0f}, "EAT!", fontSize, defaultColor),
+) : Text(Vector2{0.0f, 0.0f}, text, fontSize, defaultColor),
 	_defaultColor(defaultColor), 
 	_effectColor(effectColor), 
 	_effectFlashTime(effectFlashTime), 
@@ -18,7 +19,7 @@ FoodEatenEffect::FoodEatenEffect(
 	_isInitialized = true;
 }
 
-FoodEatenEffect::~FoodEatenEffect()
+TextEffect::~TextEffect()
 {
 	if (_isInitialized)
 	{
@@ -26,7 +27,7 @@ FoodEatenEffect::~FoodEatenEffect()
 	}
 }
 
-void FoodEatenEffect::Tick(float deltaSeconds)
+void TextEffect::Tick(float deltaSeconds)
 {
 	if (!_isStart)
 	{
@@ -53,7 +54,7 @@ void FoodEatenEffect::Tick(float deltaSeconds)
 	SetCenter(_center);
 }
 
-void FoodEatenEffect::Render()
+void TextEffect::Render()
 {
 	if (!_isStart)
 	{
@@ -63,18 +64,18 @@ void FoodEatenEffect::Render()
 	Text::Render();
 }
 
-void FoodEatenEffect::Release()
+void TextEffect::Release()
 {
 	if (!_isInitialized)
 	{
-		GAME_LOG_ERR("ALREADY_RELEASE_OR_FAILED_TO_INITIALIZE_FOOD_EATEN_EFFECT");
+		GAME_LOG_ERR("ALREADY_RELEASE_OR_FAILED_TO_INITIALIZE_TEXT_EFFECT");
 		return;
 	}
 
 	_isInitialized = true;
 }
 
-void FoodEatenEffect::StartEffect(const Vector2& center)
+void TextEffect::StartEffect(const Vector2& center)
 {
 	_isStart = true;
 	_effectStepTime = 0.0f;
@@ -83,7 +84,7 @@ void FoodEatenEffect::StartEffect(const Vector2& center)
 	SetCenter(center);
 }
 
-Color FoodEatenEffect::InterpolateColor(Color startColor, Color endColor, float t)
+Color TextEffect::InterpolateColor(Color startColor, Color endColor, float t)
 {
 	Color color;
 	color.r = (1.0f - t) * startColor.r + t * endColor.r;

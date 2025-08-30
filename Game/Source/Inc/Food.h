@@ -3,13 +3,13 @@
 #include <raylib.h>
 
 #include "Board.h"
-#include "FoodEatenEffect.h"
+#include "TextEffect.h"
 #include "IActor.h"
 
 class Food : public IActor
 {
 public:
-	Food(Board* board, FoodEatenEffect* effect);
+	Food(Board* board, TextEffect* effect);
 	virtual ~Food();
 
 	DISALLOW_COPY_AND_ASSIGN(Food);
@@ -22,10 +22,10 @@ public:
 
 private:
 	bool TrySetRandomCoord();
-	void StartEatenEffect();
+	void StartEffect();
 
 private:
 	Board* _board = nullptr;
-	FoodEatenEffect* _effect = nullptr;
+	TextEffect* _effect = nullptr;
 	BoardCoord _boardCoord;
 };

@@ -1,7 +1,7 @@
 #include "ActorManager.h"
 #include "Board.h"
 #include "Food.h"
-#include "FoodEatenEffect.h"
+#include "TextEffect.h"
 #include "GameApp.h"
 #include "GameLog.h"
 #include "MainPhase.h"
@@ -50,38 +50,32 @@ void MainPhase::Enter()
         static_cast<float>(app->GetConfig()->GetWindowWidth())  / 2.0f, 
         static_cast<float>(app->GetConfig()->GetWindowHeight()) / 2.0f
     };
-
     Board* board = ActorManager::Get().Create<Board>(
         boardPosition, 
         app->GetConfig()->GetTileSize(), 
         app->GetConfig()->GetRowTileCount(), 
         app->GetConfig()->GetColTileCount()
     );
+
+    TextEffect* levelEffect = ActorManager::Get().Create<TextEffect>("LEVEL UP!", 35, GRAY, RED, 0.1f, 2.0f, 0.0f);
     Snake* snake = ActorManager::Get().Create<Snake>(
-        board, 
-        app->GetConfig()->GetStartBodyCount(), 
+        board,
+        levelEffect,
         static_cast<EDirection>(app->GetConfig()->GetStartDirection())
     );
 
-    FoodEatenEffect* effect = ActorManager::Get().Create<FoodEatenEffect>(20, GRAY, GREEN, 0.1f, 0.5f, 20.0f);
-    Food* food = ActorManager::Get().Create<Food>(board, effect);
+    TextEffect* eatEffect = ActorManager::Get().Create<TextEffect>("EAT!", 20, GRAY, GREEN, 0.1f, 0.5f, 20.0f);
+    Food* food = ActorManager::Get().Create<Food>(board, eatEffect);
 
-    Score* score = ActorManager::Get().Create<Score>(
-        Vector2{
-            static_cast<float>(app->GetConfig()->GetWindowWidth()) / 2.0f,
-            static_cast<float>(app->GetConfig()->GetWindowHeight()) / 20.0f
-        },
-        30,
-        GRAY,
-        GREEN,
-        0.2f,
-        1.0f,
-        snake
-    );
+    Vector2 scorePosition = Vector2{
+        static_cast<float>(app->GetConfig()->GetWindowWidth()) / 2.0f,
+        static_cast<float>(app->GetConfig()->GetWindowHeight()) / 20.0f
+    };
+    Score* score = ActorManager::Get().Create<Score>(scorePosition, 30, GRAY, GREEN, 0.2f, 1.0f, snake);
 
-    _phaseActors = { board, snake, food, effect, score };
-    _tickActors = { snake, food, board, effect, score };
-    _renderActors = { board, snake, food, effect, score };
+    _phaseActors = { board, snake, food, eatEffect, levelEffect, score };
+    _tickActors = { snake, food, board, eatEffect, levelEffect, score };
+    _renderActors = { board, snake, food, eatEffect, levelEffect, score };
 }
 
 void MainPhase::Exit()

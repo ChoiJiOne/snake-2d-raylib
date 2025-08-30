@@ -7,6 +7,7 @@
 
 #include "Board.h"
 #include "IActor.h"
+#include "TextEffect.h"
 
 enum class EDirection
 {
@@ -20,7 +21,7 @@ enum class EDirection
 class Snake : public IActor
 {
 public:
-	Snake(Board* board, int32_t startBodyCount, const EDirection& startDirection);
+	Snake(Board* board, TextEffect* effect, const EDirection& startDirection);
 	virtual ~Snake();
 
 	DISALLOW_COPY_AND_ASSIGN(Snake);
@@ -42,12 +43,14 @@ private:
 	bool CanMove(const BoardCoord& head, const EDirection& direction);
 	void Move(const BoardCoord& destCoord, bool isEatFood);
 	void Stop();
+	void StartEffect();
 
 private:
 	static const int32_t MIN_START_BODY_COUNT = 2;
 
 private:
 	Board* _board = nullptr;
+	TextEffect* _effect = nullptr;
 	int32_t _startBodyCount = 0;
 	std::vector<BoardCoord> _bodys;
 
@@ -57,7 +60,9 @@ private:
 	std::map<KeyboardKey, EDirection> _keyCodeDirections;
 	std::map<EDirection, EDirection> _counterDirections;
 
-	float _moveStepTime = 0.5f; // TODO: 임시 하드 코딩 (수정해야 함!)
+	int32_t _level = 0;
+	int32_t _maxLevel = 0;
+	float _moveStepTime = 0.0f;
 	float _stepTime = 0.0f;
 
 	bool _isStopped = false;

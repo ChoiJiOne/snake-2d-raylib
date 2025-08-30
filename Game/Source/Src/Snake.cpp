@@ -1,14 +1,26 @@
 ﻿#include "GameAssert.h"
+#include "GameApp.h"
 #include "GameLog.h"
 #include "Snake.h"
 #include "MainPhase.h"
 #include "PhaseManager.h"
 
-Snake::Snake(Board* board, int32_t startBodyCount, const EDirection& startDirection)
+Snake::Snake(Board* board, TextEffect* effect, const EDirection& startDirection)
 {
 	GAME_CHECK(board != nullptr);
 	_board = board;
-	_startBodyCount = std::max(MIN_START_BODY_COUNT, startBodyCount);
+
+    GAME_CHECK(effect != nullptr);
+    _effect = effect;
+
+    GameConfig* config = GameApp::GetAppPtr()->GetConfig();
+    GAME_CHECK(config != nullptr);
+
+    _level = config->GetMinLevel();
+    _maxLevel = config->GetMaxLevel();
+    auto levelConfig = config->GetSpeedAndBody(_level);
+    _moveStepTime = levelConfig.first;
+    _startBodyCount = levelConfig.second;
 
 	if (startDirection == EDirection::NONE)
 	{
@@ -227,6 +239,18 @@ void Snake::Stop()
     mainPhase->SetGameOver(_isStopped);
 }
 
+void Snake::StartEffect()
+{
+    GameConfig* config = GameApp::GetAppPtr()->GetConfig();
+
+    Vector2 center = Vector2{
+        static_cast<float>(config->GetWindowWidth()) / 2.0f,
+        19.0f * static_cast<float>(config->GetWindowHeight()) / 20.0f
+    };
+
+    _effect->StartEffect(center);
+}
+
 void Snake::MoveDirection(const BoardCoord& head, const EDirection& direction)
 {
     BoardCoord moveBoardCoord = CalculateDirectionBoardCoord(head, direction);
@@ -234,6 +258,24 @@ void Snake::MoveDirection(const BoardCoord& head, const EDirection& direction)
     bool isEatFood = (_board->GetTileState(moveBoardCoord) == ETileState::FOOD);
     if (isEatFood)
     {
+        if (_level < _maxLevel)
+        {
+            int32_t currentBodyCount = static_cast<int32_t>(_bodys.size());
+            int32_t nextLevel = _level + 1;
+
+            GameConfig* config = GameApp::GetAppPtr()->GetConfig();
+            const auto& levelConfig = config->GetSpeedAndBody(nextLevel);
+            float nextMoveStepTime = levelConfig.first;
+            int32_t nextBodyCount = levelConfig.second;
+            if (currentBodyCount + 1 == nextBodyCount)
+            {
+                _level = nextLevel;
+                _moveStepTime = nextMoveStepTime;
+
+                StartEffect();
+            }
+        }
+
         _bodys.emplace_back(_bodys.back());
     }
 

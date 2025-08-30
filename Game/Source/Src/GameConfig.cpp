@@ -59,6 +59,37 @@ void GameConfig::Load(const std::string& path)
 	YAML::Node snakeNode = rootConfig["snake"];
 	GAME_ASSERT(boardNode.IsDefined(), "UNDEFINED_APP_CONFIG_OBJECT(%s)", "snake");
 
-	GAME_CHECK(TryGetConfigValue<int32_t>(snakeNode, "start_body_count", _startBodyCount));
 	GAME_CHECK(TryGetConfigValue<int32_t>(snakeNode, "start_direction", _startDirection));
+
+	YAML::Node levelNodeList = snakeNode["levels"];
+	for (const auto& levelNode : levelNodeList)
+	{
+		int32_t level = 0;
+		GAME_CHECK(TryGetConfigValue<int>(levelNode, "level", level));
+
+		float speed = 0.0f;
+		GAME_CHECK(TryGetConfigValue<float>(levelNode, "speed", speed));
+
+		int32_t body = 0;
+		GAME_CHECK(TryGetConfigValue<int>(levelNode, "body", body));
+
+		if (level <= _minLevel)
+		{
+			_minLevel = level;
+		}
+
+		if (level >= _maxLevel)
+		{
+			_maxLevel = level;
+		}
+
+		_levelMap.insert({ level, std::pair<float, int32_t>(speed, body) });
+	}
+}
+
+const std::pair<float, int32_t>& GameConfig::GetSpeedAndBody(int32_t level) const
+{
+	auto it = _levelMap.find(level);
+	GAME_ASSERT(it != _levelMap.end(), "INVALID_GAME_LEVEL_TO_SPEED(level:%d)", level);
+	return it->second;
 }

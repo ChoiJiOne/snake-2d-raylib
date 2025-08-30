@@ -5,6 +5,7 @@
 #include "GameLog.h"
 #include "MainPhase.h"
 #include "PhaseManager.h"
+#include "Score.h"
 #include "Snake.h"
 
 void MainPhase::Tick(float deltaSeconds)
@@ -62,9 +63,19 @@ void MainPhase::Enter()
     );
     Food* food = ActorManager::Get().Create<Food>(board);
 
-    _phaseActors = { board, snake, food, };
-    _tickActors = { snake, food, board, };
-    _renderActors = { board, snake, food, };
+    Score* score = ActorManager::Get().Create<Score>(
+        Vector2{
+            static_cast<float>(app->GetConfig()->GetWindowWidth()) / 2.0f,
+            static_cast<float>(app->GetConfig()->GetWindowHeight()) / 20.0f
+        },
+        30,
+        GRAY,
+        snake
+    );
+
+    _phaseActors = { board, snake, food, score };
+    _tickActors = { snake, food, board, score };
+    _renderActors = { board, snake, food, score };
 }
 
 void MainPhase::Exit()

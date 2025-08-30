@@ -14,6 +14,17 @@ Text::Text(const Vector2& center, const std::string& text, int32_t fontSize, con
 	_isInitialized = true;
 }
 
+Text::Text(const Vector2& center, int32_t fontSize, const Color& color) 
+	: _center(center)
+	, _fontSize(fontSize)
+	, _color(color)
+{
+	GAME_ASSERT(_fontSize > 0, "INVALID_TEXT_FONT_SIZE(fontSize:%d)", fontSize);
+
+	CalculateTextProperties();
+	_isInitialized = true;
+}
+
 Text::~Text()
 {
 	if (_isInitialized)

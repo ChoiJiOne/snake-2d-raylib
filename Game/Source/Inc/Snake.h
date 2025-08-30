@@ -30,6 +30,7 @@ public:
 	virtual void Release() override;
 
 	bool IsStopped() const { return _isStopped; }
+	int32_t GetBodyCount() const { return static_cast<int32_t>(_bodys.size()); }
 
 private:
 	std::vector<BoardCoord> CreateBodys();

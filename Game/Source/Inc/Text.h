@@ -15,6 +15,11 @@ public:
 		int32_t fontSize, 
 		const Color& color
 	);
+	Text(
+		const Vector2& center,
+		int32_t fontSize,
+		const Color& color
+	);
 	virtual ~Text();
 
 	DISALLOW_COPY_AND_ASSIGN(Text);

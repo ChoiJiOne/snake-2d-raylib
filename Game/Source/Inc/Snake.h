@@ -32,6 +32,7 @@ public:
 
 	bool IsStopped() const { return _isStopped; }
 	int32_t GetBodyCount() const { return static_cast<int32_t>(_bodys.size()); }
+	int32_t GetLevel() const { return _level; }
 
 private:
 	std::vector<BoardCoord> CreateBodys();

@@ -5,13 +5,25 @@
 #include "MainPhase.h"
 #include "PhaseManager.h"
 
-Snake::Snake(Board* board, TextEffect* effect, const EDirection& startDirection)
+Snake::Snake(
+    Board * board, 
+    TextEffect* effect, 
+    GameStatText* scoreStat,
+    GameStatText* levelStat,
+    const EDirection& startDirection
+)
 {
 	GAME_CHECK(board != nullptr);
 	_board = board;
 
     GAME_CHECK(effect != nullptr);
     _effect = effect;
+
+    GAME_CHECK(scoreStat != nullptr);
+    _scoreStat = scoreStat;
+
+    GAME_CHECK(levelStat != nullptr);
+    _levelStat = levelStat;
 
     GameConfig* config = GameApp::GetAppPtr()->GetConfig();
     GAME_CHECK(config != nullptr);
@@ -271,11 +283,14 @@ void Snake::MoveDirection(const BoardCoord& head, const EDirection& direction)
             {
                 _level = nextLevel;
                 _moveStepTime = nextMoveStepTime;
+                _levelStat->SetStat(_level);
 
                 StartEffect();
             }
         }
 
+        _score++;
+        _scoreStat->SetStat(_score);
         _bodys.emplace_back(_bodys.back());
     }
 

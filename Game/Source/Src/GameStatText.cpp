@@ -15,6 +15,7 @@ GameStatText::GameStatText(
 	_effectColor(effectColor),
 	_effectFlashTime(effectFlashTime),
 	_effectTime(effectTime),
+	_gameStatTextformat(gameStatTextformat),
 	_gameStat(defaultGameStat)
 {
 	UpdateStat();
@@ -57,6 +58,12 @@ void GameStatText::Release()
 	}
 
 	_isInitialized = true;
+}
+
+void GameStatText::SetStat(int stat)
+{
+	_gameStat = stat;
+	_isDirty = true;
 }
 
 void GameStatText::UpdateStat()

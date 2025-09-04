@@ -6,6 +6,7 @@
 #include <raylib.h>
 
 #include "Board.h"
+#include "GameStatText.h"
 #include "IActor.h"
 #include "TextEffect.h"
 
@@ -21,7 +22,13 @@ enum class EDirection
 class Snake : public IActor
 {
 public:
-	Snake(Board* board, TextEffect* effect, const EDirection& startDirection);
+	Snake(
+		Board* board, 
+		TextEffect* effect, 
+		GameStatText* scoreStat,
+		GameStatText* levelStat,
+		const EDirection& startDirection
+	);
 	virtual ~Snake();
 
 	DISALLOW_COPY_AND_ASSIGN(Snake);
@@ -62,9 +69,13 @@ private:
 	std::map<EDirection, EDirection> _counterDirections;
 
 	int32_t _level = 0;
+	int32_t _score = 0;
 	int32_t _maxLevel = 0;
 	float _moveStepTime = 0.0f;
 	float _stepTime = 0.0f;
 
 	bool _isStopped = false;
+
+	GameStatText* _scoreStat = nullptr;
+	GameStatText* _levelStat = nullptr;
 };

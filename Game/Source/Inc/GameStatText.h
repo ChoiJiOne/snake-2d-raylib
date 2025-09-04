@@ -23,6 +23,8 @@ public:
 	virtual void Render() override;
 	virtual void Release() override;
 
+	void SetStat(int stat);
+
 private:
 	void UpdateStat();
 	void UpdateEffect(float deltaSeconds);

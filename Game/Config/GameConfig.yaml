@@ -3,6 +3,7 @@ app:
   width: 600
   height: 600
   fps: 60
+  gui_font_size: 20
 board:
   tile_size: 25.0
   row_tile_count: 20

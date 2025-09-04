@@ -32,7 +32,8 @@ void GameApp::Startup()
 
     InitWindow(_gameConfig->GetWindowWidth(), _gameConfig->GetWindowHeight(), _gameConfig->GetWindowTitle().c_str());
     SetTargetFPS(_gameConfig->GetFPS());
-    
+    GuiSetStyle(DEFAULT, TEXT_SIZE, _gameConfig->GetGuiFontSize());
+
     ActorManager::Get().Startup();
     PhaseManager::Get().Startup();
 

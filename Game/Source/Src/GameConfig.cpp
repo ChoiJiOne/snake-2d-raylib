@@ -35,6 +35,7 @@ void GameConfig::Load(const std::string& path)
 		_windowWidth = std::max(_windowWidth, WINDOW_MIN_SIZE);
 		_windowHeight = std::max(_windowHeight, WINDOW_MIN_SIZE);
 		_fps = DEFAULT_FPS;
+		_guiFontSize = DEFAULT_GUI_FONT_SIZE;
 		return;
 	}
 
@@ -46,6 +47,7 @@ void GameConfig::Load(const std::string& path)
 	GAME_CHECK(TryGetConfigValue<int32_t>(appNode, "width", _windowWidth));
 	GAME_CHECK(TryGetConfigValue<int32_t>(appNode, "height", _windowHeight));
 	GAME_CHECK(TryGetConfigValue<int32_t>(appNode, "fps", _fps));
+	GAME_CHECK(TryGetConfigValue<int32_t>(appNode, "gui_font_size", _guiFontSize));
 
 	// board (GameConfig.yaml)
 	YAML::Node boardNode = rootConfig["board"];

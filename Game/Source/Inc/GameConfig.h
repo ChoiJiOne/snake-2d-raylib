@@ -18,7 +18,8 @@ public:
 	const int32_t& GetWindowWidth() const { return _windowWidth; }
 	const int32_t& GetWindowHeight() const { return _windowHeight; }
 	const int32_t& GetFPS() const { return _fps; }
-
+	const int32_t& GetGuiFontSize() const { return _guiFontSize; }
+	
 	// board (GameConfig.yaml)
 	const float& GetTileSize() const { return _tileSize; }
 	const int32_t& GetRowTileCount() const { return _rowTileCount; }
@@ -32,6 +33,7 @@ public:
 
 private:
 	static const int32_t WINDOW_MIN_SIZE = 1;
+	static const int32_t DEFAULT_GUI_FONT_SIZE = 10;
 	static const int32_t DEFAULT_FPS = 60;
 	static const int32_t MIN_LEVEL = -1;
 	static const int32_t MAX_LEVEL = 1000;
@@ -42,6 +44,7 @@ private:
 	int32_t _windowWidth = -1;
 	int32_t _windowHeight = -1;
 	int32_t _fps = 0;
+	int32_t _guiFontSize = 0;
 
 	// board (GameConfig.yaml)
 	float _tileSize = 0.0f;

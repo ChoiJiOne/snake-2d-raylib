@@ -39,6 +39,7 @@ public:
 
 	bool IsStopped() const { return _isStopped; }
 	int32_t GetBodyCount() const { return static_cast<int32_t>(_bodys.size()); }
+	int32_t GetScore() const { return _score; }
 	int32_t GetLevel() const { return _level; }
 
 private:

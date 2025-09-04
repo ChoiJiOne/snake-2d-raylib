@@ -5,6 +5,7 @@
 #include "GameApp.h"
 #include "GameLog.h"
 #include "GameStatText.h"
+#include "GameOverPopup.h"
 #include "MainPhase.h"
 #include "PhaseManager.h"
 #include "Snake.h"
@@ -80,10 +81,18 @@ void MainPhase::Enter()
 
     TextEffect* eatEffect = ActorManager::Get().Create<TextEffect>("EAT!", 20, GRAY, GREEN, 0.1f, 0.5f, 20.0f);
     Food* food = ActorManager::Get().Create<Food>(board, eatEffect);
-    
-    _phaseActors = { board, snake, food, eatEffect, levelEffect, score, level };
-    _tickActors = { snake, food, board, eatEffect, levelEffect, score, level };
-    _renderActors = { board, snake, food, eatEffect, levelEffect, score, level };
+
+    Vector2 popupPosition = Vector2{
+        static_cast<float>(app->GetConfig()->GetWindowWidth()) / 2.0f,
+        static_cast<float>(app->GetConfig()->GetWindowHeight()) / 2.0f
+    };
+    GameOverPopup* gameOverPopup = ActorManager::Get().Create<GameOverPopup>(
+        popupPosition, Vector2{300.0f, 200.0f}, snake
+    );
+
+    _phaseActors = { board, snake, food, eatEffect, levelEffect, score, level, gameOverPopup };
+    _tickActors = { snake, food, board, eatEffect, levelEffect, score, level, gameOverPopup };
+    _renderActors = { board, snake, food, eatEffect, levelEffect, score, level, gameOverPopup };
 }
 
 void MainPhase::Exit()

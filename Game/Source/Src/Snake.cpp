@@ -2,7 +2,6 @@
 #include "GameApp.h"
 #include "GameLog.h"
 #include "Snake.h"
-#include "MainPhase.h"
 #include "PhaseManager.h"
 
 Snake::Snake(
@@ -246,9 +245,6 @@ void Snake::Stop()
     }
 
     _isStopped = true;
-
-    MainPhase* mainPhase = reinterpret_cast<MainPhase*>(PhaseManager::Get().GetRegisteredPhase("MainPhase"));
-    mainPhase->SetGameOver(_isStopped);
 }
 
 void Snake::StartEffect()

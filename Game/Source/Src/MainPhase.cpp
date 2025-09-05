@@ -5,7 +5,7 @@
 #include "GameApp.h"
 #include "GameLog.h"
 #include "GameStatText.h"
-#include "GameOverPopup.h"
+#include "GameInfoPopup.h"
 #include "MainPhase.h"
 #include "PhaseManager.h"
 #include "Snake.h"
@@ -86,13 +86,13 @@ void MainPhase::Enter()
         static_cast<float>(app->GetConfig()->GetWindowWidth()) / 2.0f,
         static_cast<float>(app->GetConfig()->GetWindowHeight()) / 2.0f
     };
-    GameOverPopup* gameOverPopup = ActorManager::Get().Create<GameOverPopup>(
+    GameInfoPopup* gameInfoPopup = ActorManager::Get().Create<GameInfoPopup>(
         popupPosition, Vector2{300.0f, 200.0f}, snake
     );
 
-    _phaseActors = { board, snake, food, eatEffect, levelEffect, score, level, gameOverPopup };
-    _tickActors = { snake, food, board, eatEffect, levelEffect, score, level, gameOverPopup };
-    _renderActors = { board, snake, food, eatEffect, levelEffect, score, level, gameOverPopup };
+    _phaseActors = { board, snake, food, eatEffect, levelEffect, score, level, gameInfoPopup };
+    _tickActors = { snake, food, board, eatEffect, levelEffect, score, level, gameInfoPopup };
+    _renderActors = { board, snake, food, eatEffect, levelEffect, score, level, gameInfoPopup };
 }
 
 void MainPhase::Exit()

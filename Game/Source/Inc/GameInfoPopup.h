@@ -3,13 +3,13 @@
 #include "IActor.h"
 #include "Snake.h"
 
-class GameOverPopup : public IActor
+class GameInfoPopup : public IActor
 {
 public:
-	GameOverPopup(Vector2 center, Vector2 size, Snake* snake);
-	virtual ~GameOverPopup();
+	GameInfoPopup(Vector2 center, Vector2 size, Snake* snake);
+	virtual ~GameInfoPopup();
 
-	DISALLOW_COPY_AND_ASSIGN(GameOverPopup);
+	DISALLOW_COPY_AND_ASSIGN(GameInfoPopup);
 
 	virtual void Tick(float deltaSeconds) override;
 	virtual void Render() override;

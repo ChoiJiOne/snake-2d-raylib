@@ -3,11 +3,11 @@
 #include "GameApp.h"
 #include "GameAssert.h"
 #include "GameLog.h"
-#include "GameOverPopup.h"
+#include "GameInfoPopup.h"
 #include "MainPhase.h"
 #include "PhaseManager.h"
 
-GameOverPopup::GameOverPopup(Vector2 center, Vector2 size, Snake* snake)
+GameInfoPopup::GameInfoPopup(Vector2 center, Vector2 size, Snake* snake)
 	: _snake(snake)
 {
 	GAME_CHECK(snake != nullptr);
@@ -18,7 +18,7 @@ GameOverPopup::GameOverPopup(Vector2 center, Vector2 size, Snake* snake)
 	_round.height = size.y;
 }
 
-GameOverPopup::~GameOverPopup()
+GameInfoPopup::~GameInfoPopup()
 {
 	if (_isInitialized)
 	{
@@ -26,15 +26,15 @@ GameOverPopup::~GameOverPopup()
 	}
 }
 
-void GameOverPopup::Tick(float deltaSeconds)
+void GameInfoPopup::Tick(float deltaSeconds)
 {
-	if (_snake->IsStopped() && !_isShowMessageBox)
+	if (_snake->IsDead() && !_isShowMessageBox)
 	{
 		_isShowMessageBox = true;
 	}
 }
 
-void GameOverPopup::Render()
+void GameInfoPopup::Render()
 {
 	if (!_isShowMessageBox)
 	{
@@ -51,7 +51,7 @@ void GameOverPopup::Render()
 	}
 }
 
-void GameOverPopup::Release()
+void GameInfoPopup::Release()
 {
 	if (!_isInitialized)
 	{

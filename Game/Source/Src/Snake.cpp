@@ -71,6 +71,7 @@ Snake::Snake(
 	_bodys = CreateBodys();
 	SetBodyOnBoard(ETileState::BODY);
 
+    _state = EState::ALIVE;
 	_isInitialized = true;
 }
 
@@ -85,7 +86,7 @@ Snake::~Snake()
 void Snake::Tick(float deltaSeconds)
 {
     // 움직일 수 없다면 아무 것도 하지 않음.
-    if (_isStopped)
+    if (!IsAlive())
     {
         return;
     }
@@ -98,7 +99,7 @@ void Snake::Tick(float deltaSeconds)
         _lastDirection = direction;
         if (!TryMove(_bodys.front(), direction))
         {
-            Stop();
+            GameOver();
         }
         return;
     }
@@ -110,7 +111,7 @@ void Snake::Tick(float deltaSeconds)
 
     if (!TryMove(_bodys.front(), _lastDirection))
     {
-        Stop();
+        GameOver();
     }
 }
 
@@ -127,6 +128,11 @@ void Snake::Release()
 	}
 
 	_isInitialized = false;
+}
+
+void Snake::Stop()
+{
+    _state = EState::STOPPED;
 }
 
 std::vector<BoardCoord> Snake::CreateBodys()
@@ -236,15 +242,15 @@ void Snake::Move(const BoardCoord& destCoord, bool isEatFood)
     SetBodyOnBoard(ETileState::BODY);
 }
 
-void Snake::Stop()
+void Snake::GameOver()
 {
-    if (_isStopped)
+    if (!IsAlive())
     {
         // 이미 중지 상태라면 아무 것도 하지 않음.
         return;
     }
 
-    _isStopped = true;
+    _state = EState::DEAD;
 }
 
 void Snake::StartEffect()

@@ -22,6 +22,15 @@ enum class EDirection
 class Snake : public IActor
 {
 public:
+	enum class EState
+	{
+		NONE = 0x00,
+		ALIVE = 0x01,
+		STOPPED = 0x02,
+		DEAD = 0x03,
+	};
+
+public:
 	Snake(
 		Board* board, 
 		TextEffect* effect, 
@@ -37,7 +46,11 @@ public:
 	virtual void Render() override;
 	virtual void Release() override;
 
-	bool IsStopped() const { return _isStopped; }
+	void Stop();
+
+	bool IsAlive() const { return _state == EState::ALIVE; }
+	bool IsStopped() const { return _state == EState::STOPPED; }
+	bool IsDead() const { return _state == EState::DEAD; }
 	int32_t GetBodyCount() const { return static_cast<int32_t>(_bodys.size()); }
 	int32_t GetScore() const { return _score; }
 	int32_t GetLevel() const { return _level; }
@@ -51,7 +64,7 @@ private:
 	void MoveDirection(const BoardCoord& head, const EDirection& direction);
 	bool CanMove(const BoardCoord& head, const EDirection& direction);
 	void Move(const BoardCoord& destCoord, bool isEatFood);
-	void Stop();
+	void GameOver();
 	void StartEffect();
 
 private:
@@ -75,7 +88,7 @@ private:
 	float _moveStepTime = 0.0f;
 	float _stepTime = 0.0f;
 
-	bool _isStopped = false;
+	EState _state = EState::NONE;
 
 	GameStatText* _scoreStat = nullptr;
 	GameStatText* _levelStat = nullptr;

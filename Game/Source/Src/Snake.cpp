@@ -130,6 +130,17 @@ void Snake::Release()
 	_isInitialized = false;
 }
 
+void Snake::WakeUp()
+{
+    // 죽었으면 깨우는거 막음
+    if (IsDead())
+    {
+        return;
+    }
+
+    _state = EState::ALIVE;
+}
+
 void Snake::Stop()
 {
     _state = EState::STOPPED;

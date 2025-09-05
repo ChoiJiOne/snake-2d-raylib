@@ -28,26 +28,56 @@ GameInfoPopup::~GameInfoPopup()
 
 void GameInfoPopup::Tick(float deltaSeconds)
 {
-	if (_snake->IsDead() && !_isShowMessageBox)
+	if (_snake->IsDead() && _state == EState::PLAY)
 	{
-		_isShowMessageBox = true;
+		_title = "GAME OVER";
+		_info = TextFormat("SCORE: %d\nLEVEL: %d", _snake->GetScore(), _snake->GetLevel());
+		_buttons = "OK";
+
+		_state = EState::GAME_OVER;
+	}
+
+	if (!IsWindowFocused() && _snake->IsAlive())
+	{
+		_snake->Stop();
+
+		_title = "GAME PAUSE";
+		_info = "CONTINUE?";
+		_buttons = "OK;CANCEL";
+		_state = EState::PAUSE;
 	}
 }
 
 void GameInfoPopup::Render()
 {
-	if (!_isShowMessageBox)
+	if (_state == EState::PLAY)
 	{
 		return;
 	}
 
-	int32_t result = GuiMessageBox(_round, "GAME OVER", TextFormat("SCORE: %d\nLEVEL: %d", _snake->GetScore(), _snake->GetLevel()), "OK");
+	int32_t result = GuiMessageBox(_round, _title.c_str(), _info.c_str(), _buttons.c_str());
 	if (result >= 0)
 	{
-		_isShowMessageBox = false;
+		switch (_state)
+		{
+		case EState::PAUSE:
+			if (result == 0 || result == 1) // OK
+			{
+				_snake->WakeUp();
+				_state = EState::PLAY;
+			}
+			else // CANCEL
+			{
+				MainPhase* mainPhase = reinterpret_cast<MainPhase*>(PhaseManager::Get().GetRegisteredPhase("MainPhase"));
+				mainPhase->SetGameOver(true);
+			}
+			break;
 
-		MainPhase* mainPhase = reinterpret_cast<MainPhase*>(PhaseManager::Get().GetRegisteredPhase("MainPhase"));
-		mainPhase->SetGameOver(true);
+		case EState::GAME_OVER:
+			MainPhase* mainPhase = reinterpret_cast<MainPhase*>(PhaseManager::Get().GetRegisteredPhase("MainPhase"));
+			mainPhase->SetGameOver(true);
+			break;
+		}
 	}
 }
 

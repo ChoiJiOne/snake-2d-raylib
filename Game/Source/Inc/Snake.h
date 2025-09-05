@@ -46,6 +46,7 @@ public:
 	virtual void Render() override;
 	virtual void Release() override;
 
+	void WakeUp();
 	void Stop();
 
 	bool IsAlive() const { return _state == EState::ALIVE; }

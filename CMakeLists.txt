@@ -24,6 +24,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 find_package(raylib CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 
+add_subdirectory(Framework)
 add_subdirectory(Game)
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Game)

@@ -24,7 +24,7 @@ Snake::Snake(
     GAME_CHECK(levelStat != nullptr);
     _levelStat = levelStat;
 
-    GameConfig* config = GameApp::GetAppPtr()->GetConfig();
+    GameConfig* config = Application::GetApp()->GetConfig();
     GAME_CHECK(config != nullptr);
 
     _level = config->GetMinLevel();
@@ -266,7 +266,7 @@ void Snake::GameOver()
 
 void Snake::StartEffect()
 {
-    GameConfig* config = GameApp::GetAppPtr()->GetConfig();
+    GameConfig* config = Application::GetApp()->GetConfig();
 
     Vector2 center = Vector2{
         static_cast<float>(config->GetWindowWidth()) / 2.0f,
@@ -288,7 +288,7 @@ void Snake::MoveDirection(const BoardCoord& head, const EDirection& direction)
             int32_t currentBodyCount = static_cast<int32_t>(_bodys.size());
             int32_t nextLevel = _level + 1;
 
-            GameConfig* config = GameApp::GetAppPtr()->GetConfig();
+            GameConfig* config = Application::GetApp()->GetConfig();
             const auto& levelConfig = config->GetSpeedAndBody(nextLevel);
             float nextMoveStepTime = levelConfig.first;
             int32_t nextBodyCount = levelConfig.second;

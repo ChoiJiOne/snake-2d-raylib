@@ -12,7 +12,7 @@ Application* Application::_app = nullptr;
 
 Application::~Application()
 {
-	if (_isInitialized)
+	if (_isStartupApp)
 	{
 		Shutdown();
 	}
@@ -20,7 +20,7 @@ Application::~Application()
 
 void Application::Startup()
 {
-	if (_isInitialized)
+	if (_isStartupApp)
 	{
 		GAME_LOG_ERR("ALREADY_STARTUP_APPLICATION");
 		return;
@@ -41,7 +41,7 @@ void Application::Startup()
 
 	_app = this;
 	_isDoneLoop = false;
-	_isInitialized = true;
+	_isStartupApp = true;
 }
 
 void Application::Run()
@@ -63,7 +63,7 @@ void Application::Run()
 
 void Application::Shutdown()
 {
-	if (!_isInitialized)
+	if (!_isStartupApp)
 	{
 		GAME_LOG_ERR("ALREADY_SHUTDOWN_OR_FAILED_TO_STARTUP_GAMEAPP");
 		return;
@@ -74,7 +74,7 @@ void Application::Shutdown()
 	CloseWindow();
 
 	_app = nullptr;
-	_isInitialized = false;
+	_isStartupApp = false;
 }
 
 void Application::ProcessPhaseActionState()

@@ -45,7 +45,7 @@ void MainPhase::Render()
 
 void MainPhase::Enter()
 {
-    GameApp* app = GameApp::GetAppPtr();
+    Application* app = Application::GetApp();
 
     Vector2 scorePosition = Vector2{
     static_cast<float>(app->GetConfig()->GetWindowWidth()) / 3.0f,

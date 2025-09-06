@@ -13,10 +13,11 @@ public:
 	virtual ~Application();
 
 	virtual void Startup();
-	virtual void Run();
 	virtual void Shutdown();
 
-	bool IsInitialized() const { return _isInitialized; }
+	void Run();
+
+	bool IsStartupApp() const { return _isStartupApp; }
 	bool IsDoneLoop() const { return _isDoneLoop; }
 
 	IPhase* GetEntryPhase() const { return _entryPhase; }
@@ -34,7 +35,7 @@ private:
 	static Application* _app;
 
 private:
-	bool _isInitialized = false;
+	bool _isStartupApp = false;
 	bool _isDoneLoop = false;
 
 	IPhase* _entryPhase = nullptr;

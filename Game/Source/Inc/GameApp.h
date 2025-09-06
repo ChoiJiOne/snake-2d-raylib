@@ -1,39 +1,16 @@
 #pragma once
 
-#include <memory>
+#include "Application.h"
 
-#include <raylib.h>
-
-#include "Macro.h"
-#include "GameConfig.h"
-#include "IPhase.h"
-
-class GameApp
+class GameApp : public Application
 {
 public:
 	GameApp() = default;
-	virtual ~GameApp();
+	virtual ~GameApp() = default;
 
-	void Startup();
-	void Run();
-	void Shutdown();
-
-	GameConfig* GetConfig() { return _gameConfig.get(); }
-
-	static GameApp* GetAppPtr() { return _gameAppPtr; }
-
-private:
-	void ProcessPhaseActionState();
-
-private:
-	static GameApp* _gameAppPtr;
+	virtual void Startup() override;
+	virtual void Shutdown() override;
 
 private:
 	bool _isInitialized = false;
-	bool _isDoneLoop = false;
-
-	std::unique_ptr<GameConfig> _gameConfig = nullptr;
-
-	IPhase* _entryPhase = nullptr;
-	IPhase* _currentPhase = nullptr;
 };

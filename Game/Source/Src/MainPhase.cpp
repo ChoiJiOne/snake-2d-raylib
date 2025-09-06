@@ -48,8 +48,8 @@ void MainPhase::Enter()
     Application* app = Application::GetApp();
 
     Vector2 scorePosition = Vector2{
-    static_cast<float>(app->GetConfig()->GetWindowWidth()) / 3.0f,
-    static_cast<float>(app->GetConfig()->GetWindowHeight()) / 20.0f
+        static_cast<float>(app->GetConfig()->GetWindowWidth()) / 3.0f,
+        static_cast<float>(app->GetConfig()->GetWindowHeight()) / 20.0f
     };
     GameStatText* score = ActorManager::Get().Create<GameStatText>("SCORE: %d", 0, scorePosition, 30, GRAY, GREEN, 0.2f, 1.0f);
 

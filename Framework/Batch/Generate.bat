@@ -1,8 +1,8 @@
 @echo off
 
-set SCRIPT_DIR=%~dp0
-set SOLUTION_DIR=%SCRIPT_DIR%..\Solution
-set TEMP_DIR=%SCRIPT_DIR%..\Temp
+set SCRIPT_DIR=%~dp0..\Script\
+set SOLUTION_DIR=%~dp0..\..\Solution
+set TEMP_DIR=%~dp0..\..\Temp
 
 if not exist "%TEMP_DIR%" (
     mkdir "%TEMP_DIR%"

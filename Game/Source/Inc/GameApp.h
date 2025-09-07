@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Application.h"
+#include "ContentConfig.h"
 
 class GameApp : public Application
 {
@@ -13,4 +14,5 @@ public:
 
 private:
 	bool _isInitialized = false;
+	std::unique_ptr<ContentConfig> _contentConfig = nullptr;
 };

@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "Macro.h"
-#include "GameConfig.h"
+#include "AppConfig.h"
 #include "IPhase.h"
 
 class Application
@@ -22,13 +22,14 @@ public:
 
 	IPhase* GetEntryPhase() const { return _entryPhase; }
 	IPhase* GetCurrentPhase() const { return _currentPhase; }
-	GameConfig* GetConfig() { return _gameConfig.get(); }
+	AppConfig* GetConfig() { return _config; }
 
 	void SetEntryPhase(IPhase* entryPhase) { _entryPhase = entryPhase; }
 
 	static Application* GetApp() { return _app; }
 
 protected:
+	void SetConfig(AppConfig* config);
 	void ProcessPhaseActionState();
 	
 private:
@@ -41,7 +42,7 @@ private:
 	IPhase* _entryPhase = nullptr;
 	IPhase* _currentPhase = nullptr;
 
-	std::unique_ptr<GameConfig> _gameConfig = nullptr;
+	AppConfig* _config = nullptr;
 
 	class ActorManager* _actorMgr;
 	class PhaseManager* _phaseMgr;

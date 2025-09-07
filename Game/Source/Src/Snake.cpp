@@ -1,8 +1,10 @@
 ﻿#include "GameAssert.h"
-#include "GameApp.h"
 #include "GameLog.h"
-#include "Snake.h"
 #include "PhaseManager.h"
+
+#include "ContentConfig.h"
+#include "GameApp.h"
+#include "Snake.h"
 
 Snake::Snake(
     Board * board, 
@@ -24,7 +26,7 @@ Snake::Snake(
     GAME_CHECK(levelStat != nullptr);
     _levelStat = levelStat;
 
-    GameConfig* config = Application::GetApp()->GetConfig();
+    ContentConfig* config = reinterpret_cast<ContentConfig*>(Application::GetApp()->GetConfig());
     GAME_CHECK(config != nullptr);
 
     _level = config->GetMinLevel();
@@ -266,7 +268,7 @@ void Snake::GameOver()
 
 void Snake::StartEffect()
 {
-    GameConfig* config = Application::GetApp()->GetConfig();
+    ContentConfig* config = reinterpret_cast<ContentConfig*>(Application::GetApp()->GetConfig());
 
     Vector2 center = Vector2{
         static_cast<float>(config->GetWindowWidth()) / 2.0f,
@@ -288,7 +290,7 @@ void Snake::MoveDirection(const BoardCoord& head, const EDirection& direction)
             int32_t currentBodyCount = static_cast<int32_t>(_bodys.size());
             int32_t nextLevel = _level + 1;
 
-            GameConfig* config = Application::GetApp()->GetConfig();
+            ContentConfig* config = reinterpret_cast<ContentConfig*>(Application::GetApp()->GetConfig());
             const auto& levelConfig = config->GetSpeedAndBody(nextLevel);
             float nextMoveStepTime = levelConfig.first;
             int32_t nextBodyCount = levelConfig.second;

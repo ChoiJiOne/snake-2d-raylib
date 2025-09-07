@@ -26,12 +26,15 @@ void Application::Startup()
 		return;
 	}
 
-	_gameConfig = std::make_unique<GameConfig>();
-	_gameConfig->Load("Config/GameConfig.yaml");
+	if (_config == nullptr)
+	{
+		GAME_LOG_ERR("INVALID_APP_CONFIG");
+		return;
+	}
 
-	InitWindow(_gameConfig->GetWindowWidth(), _gameConfig->GetWindowHeight(), _gameConfig->GetWindowTitle().c_str());
-	SetTargetFPS(_gameConfig->GetFPS());
-	GuiSetStyle(DEFAULT, TEXT_SIZE, _gameConfig->GetGuiFontSize());
+	InitWindow(_config->GetWindowWidth(), _config->GetWindowHeight(), _config->GetWindowTitle().c_str());
+	SetTargetFPS(_config->GetFPS());
+	GuiSetStyle(DEFAULT, TEXT_SIZE, _config->GetGuiFontSize());
 	
 	_actorMgr = ActorManager::Get().GetPtr();
 	_phaseMgr = PhaseManager::Get().GetPtr();
@@ -75,6 +78,12 @@ void Application::Shutdown()
 
 	_app = nullptr;
 	_isStartupApp = false;
+}
+
+void Application::SetConfig(AppConfig* config)
+{
+	GAME_CHECK(config != nullptr);
+	_config = config;
 }
 
 void Application::ProcessPhaseActionState()

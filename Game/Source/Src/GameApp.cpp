@@ -8,6 +8,10 @@
 
 void GameApp::Startup()
 {
+    _contentConfig = std::make_unique<ContentConfig>();
+    _contentConfig->TryLoadConfigFile("Config/ContentConfig.yaml");
+
+    Application::SetConfig(_contentConfig.get());
     Application::Startup();
 
     if (_isInitialized)

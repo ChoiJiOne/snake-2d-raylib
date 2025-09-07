@@ -9,7 +9,11 @@
 void GameApp::Startup()
 {
     _contentConfig = std::make_unique<ContentConfig>();
-    _contentConfig->TryLoadConfigFile("Config/ContentConfig.yaml");
+    if (!_contentConfig->TryLoadConfigFile("Config/ContentConfig.yaml"))
+    {
+        GAME_LOG_ERR("FAILED_TO_LOAD_CONFIF_FILE(path:%s)", "Config/ContentConfig.yaml");
+        return;
+    }
 
     Application::SetConfig(_contentConfig.get());
     Application::Startup();
